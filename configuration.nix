@@ -117,6 +117,9 @@
     wget
   ];
   environment.variables.EDITOR = "nvim";
+  environment.shellAliases = {
+    nrs = "sudo nixos-rebuild switch --flake ~/nixos";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
