@@ -4,6 +4,7 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
@@ -96,9 +97,12 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+LxALPXfkVQ3MxQu3h0pkZ3o+OtY5cSfFgf5lkTlD0 brpol@ncc-1701e"
     ];
-    packages = with pkgs; [
-      neovim
-    ];
+    packages = with pkgs;
+      [
+      ]
+      ++ [
+        inputs.neovim.packages.${pkgs.system}.default
+      ];
   };
   users.users."root" = {
     openssh.authorizedKeys.keys = [
