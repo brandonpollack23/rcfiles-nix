@@ -1,0 +1,12 @@
+{
+  "nixd": {
+    "nixpkgs": {
+      "expr": "import (builtins.getFlake \"/home/brpol/src/learn_nix/mnt/vm_nixos/home/brpol/nixos\").inputs.nixpkgs { }"
+    },
+    "options": {
+      "nixos": {
+        "expr": "let flake = builtins.getFlake \"/home/brpol/src/learn_nix/mnt/vm_nixos/home/brpol/nixos\"; cfgs = flake.nixosConfigurations; in cfgs.${builtins.head (builtins.attrNames cfgs)}.options"
+      }
+    }
+  }
+}
