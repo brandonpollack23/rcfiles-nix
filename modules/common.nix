@@ -62,13 +62,21 @@
   environment.systemPackages = with pkgs;
     [
       alejandra # nix code formatter
+      bat # cat with wings
+      bitwarden-cli
       curl
       fastfetch
+      fzf
+      gh # UI to a bad forge
       git
-      jj
+      htop
+      jj # version control of the modern times, reminds me of fig
+      jq
+      ripgrep
       timew-sync-client
       timewarrior # time tracker
       tmux
+      tree
       wget
       zsh
     ]

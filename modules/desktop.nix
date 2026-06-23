@@ -23,5 +23,5 @@
     pulse.enable = true;
   };
 
-  environment.systemPackages = [pkgs.google-chrome];
+  environment.systemPackages = with pkgs; [google-chrome ghostty];
 }
