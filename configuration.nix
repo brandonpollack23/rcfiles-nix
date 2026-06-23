@@ -118,12 +118,8 @@
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+LxALPXfkVQ3MxQu3h0pkZ3o+OtY5cSfFgf5lkTlD0 brpol@ncc-1701e"
     ];
-    packages = with pkgs;
-      [
-      ]
-      ++ [
-        inputs.neovim.packages.${pkgs.system}.default
-      ];
+    packages = with pkgs; [
+    ];
   };
   users.users."root" = {
     openssh.authorizedKeys.keys = [
@@ -136,11 +132,21 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    neovim
-    git
-    wget
-  ];
+  environment.systemPackages = with pkgs;
+    [
+      curl
+      git
+      google-chrome
+      jj # better vcs system
+      neovim # best text edtitor
+      tmux
+      wget
+      zsh
+    ]
+    ++ [
+      inputs.neovim.packages.${pkgs.system}.default
+      inputs.nixos-cli.packages.${pkgs.system}.default
+    ];
   environment.variables.EDITOR = "nvim";
   environment.shellAliases = {
     nrs = "sudo nixos-rebuild switch --flake ~/nixos";
