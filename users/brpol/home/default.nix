@@ -13,6 +13,10 @@
   # Passed in from mkHost via home-manager.extraSpecialArgs — single source of truth.
   home.stateVersion = stateVersion;
 
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
   # Lets home-manager manage itself; required when using the NixOS module.
   programs.home-manager.enable = true;
 }

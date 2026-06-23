@@ -30,7 +30,11 @@ in rec {
       else home-manager.nixosModules.home-manager;
   in
     nixSystem {
-      specialArgs = {inherit stateVersion rootAuthorizedKeys;};
+      specialArgs = {
+        inherit stateVersion rootAuthorizedKeys;
+        neovimPkg = neovim.packages;
+        nixosCliPkg = nixos-cli.packages;
+      };
       modules =
         [
           # Opinionated nix daemon settings from Determinate Systems.
@@ -64,15 +68,6 @@ in rec {
               userAuthorizedKeys;
           }
 
-          # Always-included packages sourced from flake inputs rather than nixpkgs.
-          # These live here rather than in common.nix because modules shouldn't
-          # reach into flake inputs directly; lib owns that knowledge.
-          ({pkgs, ...}: {
-            environment.systemPackages = [
-              neovim.packages.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
-              nixos-cli.packages.${pkgs.stdenv.hostPlatform.system}.default # nixos CLI tool
-            ];
-          })
         ]
         ++ lib.optional enableDesktop ../modules/desktop.nix
         # Pull in each user's system-level modules (shared default + OS-specific).

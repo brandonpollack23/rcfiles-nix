@@ -1,10 +1,10 @@
 # Baseline configuration imported by every host via mkHost.
 # Put things here if they should be true on every machine you own.
-# Packages that come from flake inputs (neovim nightly, nixos-cli) live in
-# lib/default.nix instead — modules shouldn't reach into flake inputs directly.
 {
   pkgs,
   rootAuthorizedKeys,
+  neovimPkg,
+  nixosCliPkg,
   ...
 }: {
   nix = {
@@ -59,15 +59,23 @@
   nixpkgs.config.allowUnfree = true;
 
   # Base CLI tools available on every host. GUI apps belong in modules/desktop.nix.
-  environment.systemPackages = with pkgs; [
-    alejandra # nix code formatter
-    curl
-    git
-    jj
-    tmux
-    wget
-    zsh
-  ];
+  environment.systemPackages = with pkgs;
+    [
+      alejandra # nix code formatter
+      curl
+      fastfetch
+      git
+      jj
+      timew-sync-client
+      timewarrior # time tracker
+      tmux
+      wget
+      zsh
+    ]
+    ++ [
+      neovimPkg.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
+      nixosCliPkg.${pkgs.stdenv.hostPlatform.system}.default # nixos CLI tool
+    ];
 
   environment.variables.EDITOR = "nvim";
   environment.shellAliases = {
