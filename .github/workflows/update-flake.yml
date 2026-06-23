@@ -1,0 +1,47 @@
+name: Update flake inputs
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 15 * * *' # midnight JST (UTC+9)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: DeterminateSystems/nix-installer-action@v16
+
+      - uses: cachix/cachix-action@v17
+        with:
+          name: brandonpollack23
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+
+      - name: Update flake inputs
+        run: nix flake update
+
+      - name: Check flake
+        run: nix flake check --print-build-logs
+
+      - name: Build vmnixos
+        run: nix build .#nixosConfigurations.vmnixos.config.system.build.toplevel --no-link --print-build-logs
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add flake.lock
+          if git diff --staged --quiet; then
+            echo "Flake inputs are already up to date"
+          else
+            git commit -m "chore: update flake inputs"
+            git push
+          fi

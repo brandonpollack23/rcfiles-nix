@@ -1,3 +1,7 @@
+- we manually use the flake path a lot which varies based on machine/platform, can we get the path to this flake using nix?
+- state dir is also manual, is there a util that will fix this up for me?
+- lots of if darwin import this/that can we streamline that?
+
 - setup home
   - setup desktop background revolving bing
 

@@ -32,7 +32,7 @@ in rec {
   in
     nixSystem {
       specialArgs = {
-        inherit stateVersion rootAuthorizedKeys grubTheme;
+        inherit stateVersion rootAuthorizedKeys grubTheme isDarwin;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
       };
@@ -46,6 +46,10 @@ in rec {
 
           # Shared baseline: nix settings, locale, base packages, ssh, zsh, root key.
           ../modules/common.nix
+
+          # Automatic nightly pull and platform-specific rebuild. Disable per-host
+          # with rcfiles.autoUpgrade.enable = false.
+          ../modules/auto-upgrade.nix
 
           # Wires home-manager into NixOS (or Darwin) so user home configs are
           # built as part of nixos-rebuild.
