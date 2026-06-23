@@ -151,7 +151,7 @@
     ];
   environment.variables.EDITOR = "nvim";
   environment.shellAliases = {
-    nrs = "sudo nixos-rebuild switch --flake ~/nixos";
+    nrs = "sudo nixos-rebuild switch --flake ~/rcfiles-nix";
   };
 
   # various programs can be configured further, some just require "enable" to do further setup.
