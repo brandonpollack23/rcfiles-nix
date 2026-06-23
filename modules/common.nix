@@ -66,6 +66,7 @@
       bitwarden-cli
       curl
       fastfetch
+      fh # flakehub
       fzf
       gh # UI to a bad forge
       git

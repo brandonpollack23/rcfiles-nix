@@ -14,8 +14,7 @@
     nixos-cli.url = "github:nix-community/nixos-cli";
   };
 
-  outputs = inputs:
-  let
+  outputs = inputs: let
     myLib = import ./lib inputs;
     keys.ncc1701e = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+LxALPXfkVQ3MxQu3h0pkZ3o+OtY5cSfFgf5lkTlD0 brpol@ncc-1701e";
   in {
@@ -29,6 +28,7 @@
         userAuthorizedKeys = {
           brpol = [keys.ncc1701e];
         };
+        grubTheme = ./grub-themes/fallout;
       };
 
       # Adding a second host is this easy:

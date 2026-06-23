@@ -19,6 +19,7 @@ in rec {
     users ? ["brpol"], # list of usernames; each must have users/<name>/nixos.nix + home/
     rootAuthorizedKeys ? [], # SSH public keys granted access to root on this host
     userAuthorizedKeys ? {}, # attrset of username -> SSH public keys, e.g. { brpol = [ "ssh-ed25519 ..." ]; }
+    grubTheme ? ../grub-themes/fallout, # path to a GRUB theme directory, e.g. ./grub-themes/fallout
   }: let
     nixSystem =
       if isDarwin
@@ -31,7 +32,7 @@ in rec {
   in
     nixSystem {
       specialArgs = {
-        inherit stateVersion rootAuthorizedKeys;
+        inherit stateVersion rootAuthorizedKeys grubTheme;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
       };
@@ -67,8 +68,8 @@ in rec {
               })
               userAuthorizedKeys;
           }
-
         ]
+        ++ lib.optional (!isDarwin) ../modules/boot.nix
         ++ lib.optional enableDesktop ../modules/desktop.nix
         # Pull in each user's system-level modules (shared default + OS-specific).
         ++ builtins.concatMap (userModules {inherit isDarwin;}) users;
