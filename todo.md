@@ -1,4 +1,7 @@
 - setup home
+  - setup desktop background revolving bing
+
+- nvim lazyvim, how deep do i go?
 
 - grub options
 - ssh pub/priv key setup (and on ncc1701e, can i replace my hard coded public key?)
