@@ -45,10 +45,31 @@
     LC_TIME = "ja_JP.UTF-8";
   };
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      substituters = [
+        "https://cache.nixos.org" # keep the default
+        "https://nix-community.cachix.org"
+      ];
+      trusted-public-keys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+    };
+    optimise = {
+      automatic = true;
+    };
+    gc = {
+      automatic = true;
+      dates = "*-*-* 00:03:30";
+      options = "--delete-older-than 7d";
+    };
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
