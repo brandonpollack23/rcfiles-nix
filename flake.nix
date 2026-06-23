@@ -14,25 +14,25 @@
     nixos-cli.url = "github:nix-community/nixos-cli";
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    determinate,
-    home-manager,
-    ...
-  }: {
-    nixosConfigurations.vmnixos = nixpkgs.lib.nixosSystem {
-      specialArgs = {inherit inputs;};
-      modules = [
-        ./configuration.nix
-        determinate.nixosModules.default
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.brpol = import ./home.nix;
-        }
-      ];
+  outputs = inputs:
+  let
+    myLib = import ./lib inputs;
+    keys.ncc1701e = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+LxALPXfkVQ3MxQu3h0pkZ3o+OtY5cSfFgf5lkTlD0 brpol@ncc-1701e";
+  in {
+    nixosConfigurations = {
+      vmnixos = myLib.mkHost {
+        hostname = "vmnixos";
+        stateVersion = "26.05";
+        enableDesktop = true;
+        users = ["brpol"];
+        rootAuthorizedKeys = [keys.ncc1701e];
+        userAuthorizedKeys = {
+          brpol = [keys.ncc1701e];
+        };
+      };
+
+      # Adding a second host is this easy:
+      # another-host = myLib.mkHost { hostname = "another-host"; users = [ "brpol" ]; };
     };
   };
 }
