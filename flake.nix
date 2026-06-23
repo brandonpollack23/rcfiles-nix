@@ -5,6 +5,7 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     neovim.url = "github:nix-community/neovim-nightly-overlay";
+    nixos-cli.url = "github:nix-community/nixos-cli";
   };
 
   outputs = inputs @ {

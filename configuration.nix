@@ -154,9 +154,13 @@
     nrs = "sudo nixos-rebuild switch --flake ~/nixos";
   };
 
+  # various programs can be configured further, some just require "enable" to do further setup.
+  programs = {
+    zsh.enable = true;
+  };
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
-  programs.zsh.enable = true;
   # programs.mtr.enable = true;
   # programs.gnupg.agent = {
   #   enable = true;
