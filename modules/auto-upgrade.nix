@@ -1,5 +1,6 @@
 {
   lib,
+  config,
   isDarwin,
   ...
 }: {
@@ -16,19 +17,13 @@
 
     flakePath = lib.mkOption {
       type = lib.types.str;
-      default =
-        if isDarwin
-        then "/Users/brpol/rcfiles-nix"
-        else "/home/brpol/rcfiles-nix";
+      default = "${config.users.users.brpol.home}/rcfiles-nix";
       description = "Path to the rcfiles-nix checkout to update and rebuild.";
     };
 
     stateDir = lib.mkOption {
       type = lib.types.str;
-      default =
-        if isDarwin
-        then "/Users/brpol/.local/state/rcfiles-auto-upgrade"
-        else "/home/brpol/.local/state/rcfiles-auto-upgrade";
+      default = "${config.users.users.brpol.home}/.local/state/rcfiles-auto-upgrade";
       description = "Directory for persisting upgrade failure markers.";
     };
   };
