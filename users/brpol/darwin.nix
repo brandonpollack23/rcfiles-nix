@@ -14,4 +14,4 @@
 #     serviceConfig.RunAtLoad = true;
 #   };
 # }
-{ }
+{}

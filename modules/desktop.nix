@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     google-chrome
     ghostty
+    libnotify
   ];
 
   services.xserver = {

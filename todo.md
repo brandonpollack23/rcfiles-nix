@@ -1,8 +1,19 @@
-- state dir is also manual, is there a util that will fix this up for me?
-- lots of if darwin import this/that can we streamline that?
+- get hostname from file/pathname in host config
+
+- add gh key to secrets and share with brpol
+
 - is it possible to move scripts into their own files for lsp/highlighting purposes and pull them into the nix config?
 
+- further organize common.nix module
+- further organize home nix module (scripts etc that are in let)
+
+- find an way to find location of the flake so i dont have to hard code commands that require it.
+
+- lots of if darwin import this/that can we streamline that?
+
 - make sure the flake is in the path you specify in autoUpgrade.flakePath
+
+- it looks like we can get at ssh keys from nix, lets make the server accessible by public key from my other devices, and my desktop accessible via laptop
 
 - setup home
   - setup desktop background revolving bing

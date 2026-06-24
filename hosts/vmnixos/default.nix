@@ -14,12 +14,5 @@
 
   time.timeZone = "Asia/Tokyo";
 
-  # Changing stateVersion after the initial install can break stateful services.
-  # Only bump it when NixOS release notes explicitly say to. Set in flake.nix mkHost call.
-  # VM — long sudo timeout so it doesn't keep asking mid-session.
-  security.sudo.extraConfig = ''
-    Defaults timestamp_timeout=120
-  '';
-
   system.stateVersion = stateVersion;
 }

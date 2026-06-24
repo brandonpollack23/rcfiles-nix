@@ -18,4 +18,4 @@
 #     serviceConfig.ExecStart = "${pkgs.my-tool}/bin/my-tool";
 #   };
 # }
-{ }
+{...}: {}

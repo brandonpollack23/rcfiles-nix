@@ -6,6 +6,7 @@
   determinate,
   neovim,
   nixos-cli,
+  sops-nix,
   darwin ? null,
   ...
 }: let
@@ -35,6 +36,7 @@ in rec {
         inherit stateVersion rootAuthorizedKeys grubTheme isDarwin;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
+        sopsNixModule = sops-nix.nixosModules.sops;
       };
       modules =
         [
