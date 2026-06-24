@@ -48,8 +48,12 @@ in rec {
           ../modules/common.nix
 
           # Automatic nightly pull and platform-specific rebuild. Disable per-host
-          # with rcfiles.autoUpgrade.enable = false.
+          # with rcfiles_nix.autoUpgrade.enable = false.
           ../modules/auto-upgrade.nix
+
+          # nrs alias wrapping the platform rebuild command. Disable per-host
+          # with rcfiles_nix.rebuild.enable = false.
+          ../modules/rebuild.nix
 
           # Wires home-manager into NixOS (or Darwin) so user home configs are
           # built as part of nixos-rebuild.
