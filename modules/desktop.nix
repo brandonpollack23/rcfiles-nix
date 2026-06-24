@@ -1,6 +1,11 @@
 # Desktop environment — imported by hosts that want a GUI.
 # Headless/server hosts should omit this.
 {pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    google-chrome
+    ghostty
+  ];
+
   services.xserver = {
     enable = true;
     displayManager.lightdm.enable = true;
@@ -22,6 +27,4 @@
     alsa.support32Bit = true;
     pulse.enable = true;
   };
-
-  environment.systemPackages = with pkgs; [google-chrome ghostty];
 }

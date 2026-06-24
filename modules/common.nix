@@ -8,6 +8,36 @@
   nixosCliPkg,
   ...
 }: {
+  # Base CLI tools available on every host. GUI apps belong in modules/desktop.nix.
+  environment.systemPackages = with pkgs;
+    [
+      alejandra # nix code formatter
+      bat # cat with wings
+      bitwarden-cli
+      cachix # nix caching system
+      curl
+      fastfetch
+      fh # flakehub
+      fzf
+      gh # UI to a bad forge
+      git
+      htop
+      jj # version control of the modern times, reminds me of fig
+      jq
+      noti # xplatform notifications tool
+      ripgrep
+      timew-sync-client
+      timewarrior # time tracker
+      tmux
+      tree
+      wget
+      zsh
+    ]
+    ++ [
+      neovimPkg.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
+      nixosCliPkg.${pkgs.stdenv.hostPlatform.system}.default # nixos CLI tool
+    ];
+
   nix = {
     settings = {
       auto-optimise-store = true;
@@ -27,6 +57,12 @@
         "nix-command"
         "flakes"
       ];
+      post-build-hook = pkgs.writeShellScript "cachix-push" ''
+        set -eu
+        set -f
+        export IFS=' '
+        exec ${pkgs.cachix}/bin/cachix push brandonpollack23 $OUT_PATHS
+      '';
     };
     optimise.automatic = true;
     gc = {
@@ -60,35 +96,6 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-
-  # Base CLI tools available on every host. GUI apps belong in modules/desktop.nix.
-  environment.systemPackages = with pkgs;
-    [
-      alejandra # nix code formatter
-      bat # cat with wings
-      bitwarden-cli
-      curl
-      fastfetch
-      fh # flakehub
-      fzf
-      gh # UI to a bad forge
-      git
-      htop
-      jj # version control of the modern times, reminds me of fig
-      jq
-      noti # xplatform notifications tool
-      ripgrep
-      timew-sync-client
-      timewarrior # time tracker
-      tmux
-      tree
-      wget
-      zsh
-    ]
-    ++ [
-      neovimPkg.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
-      nixosCliPkg.${pkgs.stdenv.hostPlatform.system}.default # nixos CLI tool
-    ];
 
   environment.variables.EDITOR = "nvim";
   environment.shellAliases.nrs = "${config.rcfiles_nix.rebuild.script}";
