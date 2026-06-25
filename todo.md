@@ -2,15 +2,12 @@
 
 - setup home
   - setup desktop background revolving bing
+  - google drive setup
 
 - nixos-anywhere for bootstrapping new systems
   - can it do hardware config?
   - can it run my brpol-setup script?
   - can it do darwin?
-
-- google drive setup
-
-- it looks like we can get at ssh keys from nix, lets make the server accessible by public key from my other devices, and my desktop accessible via laptop
 
 - nvim lazyvim, how deep do i go?
 
