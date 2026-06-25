@@ -23,4 +23,8 @@ git -C "$_flake_path" remote set-url origin git@github.com:brandonpollack23/rcfi
 unset _flake_path
 
 echo "" >&2
+echo "--- Step 6: register this host's SSH public key in the flake ---" >&2
+register-ssh-key-nix
+
+echo "" >&2
 echo "=== Setup complete! ===" >&2

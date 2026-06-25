@@ -11,15 +11,30 @@
 }: let
   lib = nixpkgs.lib;
 in rec {
+  resolveHostKeys = import ./resolve-host-keys.nix {inherit lib;};
+
   mkHost = {
     hostname, # must match a directory under hosts/
     stateVersion, # e.g. "26.05" — single source of truth for system + home stateVersion
     isDarwin ? false, # true for Macintosh
     enableDesktop ? true, # include modules/desktop.nix (GUI stack, sound, printing)
     users ? ["brpol"], # list of usernames; each must have users/<name>/nixos.nix + home/
-    rootAuthorizedKeys ? [], # SSH public keys granted access to root on this host
-    userAuthorizedKeys ? {}, # attrset of username -> SSH public keys, e.g. { brpol = [ "ssh-ed25519 ..." ]; }
+    rootAuthorizedKeys ? [], # SSH public keys granted access to root on this host (escape hatch)
+    userAuthorizedKeys ? {}, # attrset of username -> SSH public keys (escape hatch)
+    allowedSSHHosts ? [], # hostnames whose registered user.pub may SSH in as root + every user
+    hostUserKeys ? {}, # registry passed in from flake.nix: hostname -> pubkey or null
   }: let
+    allowedKeys = resolveHostKeys {inherit hostname allowedSSHHosts hostUserKeys;};
+    finalRootKeys = rootAuthorizedKeys ++ allowedKeys;
+    # Give every user on this host the same set of allow-list keys. (for now, this can be modified to use the param)
+    allowedKeysByUser = lib.genAttrs users (_: allowedKeys);
+    # Merge the escape-hatch per-user keys with the allow-list keys, concatenating
+    # the two lists when the same username appears in both attrsets.
+    mergedUserKeys = lib.zipAttrsWith (_: lib.concatLists) [
+      userAuthorizedKeys
+      allowedKeysByUser
+    ];
+
     nixSystem =
       if isDarwin
       then darwin.lib.darwinSystem
@@ -31,7 +46,8 @@ in rec {
   in
     nixSystem {
       specialArgs = {
-        inherit hostname stateVersion rootAuthorizedKeys isDarwin;
+        inherit hostname stateVersion isDarwin;
+        rootAuthorizedKeys = finalRootKeys;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
         sopsNixModule = sops-nix.nixosModules.sops;
@@ -44,7 +60,7 @@ in rec {
           # Host-specific config: bootloader, hostname, timezone, stateVersion, hardware.
           ../hosts/${hostname}
 
-          # Shared baseline: nix settings, locale, base packages, ssh, zsh, root key.
+          # Shared baseline: nix settings, locale, base packages, root ssh, zsh, root key.
           ../modules/common.nix
 
           # Automatic nightly pull and platform-specific rebuild. Disable per-host
@@ -74,7 +90,7 @@ in rec {
               lib.mapAttrs (_user: keys: {
                 openssh.authorizedKeys.keys = keys;
               })
-              userAuthorizedKeys;
+              mergedUserKeys;
           }
         ]
         ++ lib.optional enableDesktop ../modules/desktop.nix

@@ -1,8 +1,14 @@
 {pkgs, ...}: let
   brpol-setup = pkgs.writeShellApplication {
     name = "brpol-setup";
-    runtimeInputs = [ensure-age-key ensure-ssh-key ensure-gh-auth ensure-gh-ssh-key];
+    runtimeInputs = [ensure-age-key ensure-ssh-key ensure-gh-auth ensure-gh-ssh-key register-ssh-key-nix];
     text = builtins.readFile ./brpol-setup.sh;
+  };
+
+  register-ssh-key-nix = pkgs.writeShellApplication {
+    name = "register-ssh-key-nix";
+    runtimeInputs = [pkgs.git pkgs.openssh pkgs.coreutils ensure-ssh-key];
+    text = builtins.readFile ./register-ssh-key-nix.sh;
   };
 
   ensure-ssh-key = pkgs.writeShellApplication {
@@ -49,5 +55,6 @@ in {
     ensure-ssh-key
     ensure-gh-auth
     ensure-gh-ssh-key
+    register-ssh-key-nix
   ];
 }

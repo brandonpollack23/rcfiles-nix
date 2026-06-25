@@ -1,5 +1,3 @@
-- implement my own ssh keyring of keys where upon initialization of public key a commit is made to the flake into an attribute set of its hostname to the public key. other hosts can select which hosts they wish to allow (this can be done from the get go even before the key is committed) to ssh into them. then these are added to authorized keys for ssh by the flake (if present after initial machine setup and its commit updates the other hosts). so flow is -> add host to config -> add that host to allowed ssh accessers to other hosts -> bring up new host -> that hosts user interactive initialization script (which also sets up sops) also adds/commits its public key and pushes -> other hosts pull and update -> when tehy rebuild now there is a public key there and they can add it to known hosts successfully.
-
 - setup home
   - setup desktop background revolving bing
   - google drive setup
@@ -11,12 +9,15 @@
 
 - nvim lazyvim, how deep do i go?
 
-- setup ds9
-  - ssh from other machines
-  - ds9 wireguard
+- stargazer
+  - obliderate brew and move the nix
+  - gotta go through tons of settings
 
 - ncc 1701e config (steam, etc)
-  - hardware config? how?
-  - swap?
+
+- setup ds9
+  - zfs
+  - all the docker containers setup and preserve state
+  - wireguard
 
 - streaming box?
