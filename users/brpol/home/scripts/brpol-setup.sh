@@ -17,4 +17,10 @@ echo "--- Step 4: upload SSH public key to GitHub ---" >&2
 ensure-gh-ssh-key
 
 echo "" >&2
+echo "--- Step 5: switch rcfiles-nix remote to SSH ---" >&2
+_flake_path=$(cat /etc/rcfiles-nix/flake-path 2>/dev/null || echo "$HOME/rcfiles-nix")
+git -C "$_flake_path" remote set-url origin git@github.com:brandonpollack23/rcfiles-nix.git
+unset _flake_path
+
+echo "" >&2
 echo "=== Setup complete! ===" >&2

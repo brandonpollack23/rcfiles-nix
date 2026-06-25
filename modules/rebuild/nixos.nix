@@ -4,7 +4,7 @@
   ...
 }: {
   config.rcfiles_nix.rebuild.script = pkgs.writeShellScript "nrs" ''
-    sudo nixos-rebuild switch --flake ~/rcfiles-nix "$@"
+    sudo nixos-rebuild switch --flake "$(cat /etc/rcfiles-nix/flake-path)" "$@"
     rc=$?
     if [ $rc -eq 0 ]; then
       rm -f ${config.rcfiles_nix.autoUpgrade.stateDir}/failure

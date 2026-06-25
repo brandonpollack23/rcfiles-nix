@@ -6,7 +6,6 @@
   ...
 }: let
   cfg = config.rcfiles_nix.autoUpgrade;
-  flakePath = lib.escapeShellArg cfg.flakePath;
   stateDir = lib.escapeShellArg cfg.stateDir;
 
   notifyScript = pkgs.writeShellScript "rcfiles-notify-upgrade-failure" ''
@@ -39,7 +38,7 @@ in {
 
         STATE_DIR=${stateDir}
         FAILURE_FILE="$STATE_DIR/failure"
-        FLAKE_PATH=${flakePath}
+        FLAKE_PATH=$(cat /etc/rcfiles-nix/flake-path)
 
         mkdir -p "$STATE_DIR"
         chown brpol:users "$STATE_DIR"
@@ -98,7 +97,7 @@ in {
     programs.git = {
       enable = true;
       config = {
-        safe.directory = cfg.flakePath;
+        safe.directory = "${config.users.users.brpol.home}/rcfiles-nix";
       };
     };
 
