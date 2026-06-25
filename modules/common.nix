@@ -9,6 +9,7 @@
 }: {
   imports = [
     ./common/nix-daemon.nix
+    ./common/nix-ld.nix
     ./common/secrets.nix
     ./common/i18n.nix
     ./common/ssh.nix
