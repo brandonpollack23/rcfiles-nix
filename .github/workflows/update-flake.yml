@@ -19,6 +19,8 @@ jobs:
   update:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+    outputs:
+      hosts: ${{ steps.list-hosts.outputs.hosts }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +29,7 @@ jobs:
       - uses: cachix/cachix-action@v17
         with:
           name: brandonpollack23
+          extraPullNames: nix-community,watersucks
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
       - name: Update flake inputs
@@ -35,15 +38,11 @@ jobs:
       - name: Check flake
         run: nix flake check --print-build-logs
 
-      - name: Build vmnixos
+      - name: Discover hosts
+        id: list-hosts
         run: |
-          result=$(nix build .#nixosConfigurations.vmnixos.config.system.build.toplevel --no-link --print-out-paths --print-build-logs)
-          echo "VMNIXOS_PATH=$result" >> "$GITHUB_ENV"
-
-      - name: Push and pin vmnixos build in Cachix (keep latest only)
-        run: |
-          cachix push brandonpollack23 "$VMNIXOS_PATH"
-          cachix pin brandonpollack23 vmnixos-latest "$VMNIXOS_PATH" --keep-revisions 1
+          hosts=$(ls hosts/ | jq -Rsc '[split("\n") | .[] | select(length > 0)]')
+          echo "hosts=$hosts" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push if changed
         run: |
@@ -56,3 +55,29 @@ jobs:
             git commit -m "chore: update flake inputs"
             git push
           fi
+
+  build:
+    needs: update
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        host: ${{ fromJson(needs.update.outputs.hosts) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: DeterminateSystems/nix-installer-action@v16
+
+      - uses: cachix/cachix-action@v17
+        with:
+          name: brandonpollack23
+          extraPullNames: nix-community,watersucks
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+
+      - name: Build ${{ matrix.host }}
+        run: |
+          result=$(nix build ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel" --no-link --print-out-paths --print-build-logs)
+          cachix push brandonpollack23 "$result"
+          cachix pin brandonpollack23 "${{ matrix.host }}-latest" "$result" --keep-revisions 1
