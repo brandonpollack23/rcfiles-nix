@@ -7,6 +7,71 @@
   stateVersion,
   ...
 }: let
+  # One-time machine setup: age key, SSH key pair, GitHub auth. Idempotent — each step skips if already done.
+  brpol-setup = pkgs.writeShellScriptBin "brpol-setup" ''
+    set -euo pipefail
+
+    echo "=== brpol one-time setup ===" >&2
+
+    echo "" >&2
+    echo "--- Step 1: age key ---" >&2
+    ${ensure-age-key}/bin/ensure-age-key
+
+    echo "" >&2
+    echo "--- Step 2: SSH key ---" >&2
+    ${ensure-ssh-key}/bin/ensure-ssh-key
+
+    echo "" >&2
+    echo "--- Step 3: GitHub auth ---" >&2
+    ${ensure-gh-auth}/bin/ensure-gh-auth
+
+    echo "" >&2
+    echo "--- Step 4: upload SSH public key to GitHub ---" >&2
+    ${ensure-gh-ssh-key}/bin/ensure-gh-ssh-key
+
+    echo "" >&2
+    echo "=== Setup complete! ===" >&2
+  '';
+
+  # Generates ~/.ssh/id_ed25519 if absent; prompts for passphrase interactively.
+  ensure-ssh-key = pkgs.writeShellScriptBin "ensure-ssh-key" ''
+    set -euo pipefail
+    SSH_KEY="$HOME/.ssh/id_ed25519"
+    if [ -f "$SSH_KEY" ]; then
+      echo "SSH key already exists at $SSH_KEY, skipping generation." >&2
+      exit 0
+    fi
+    mkdir -p "$HOME/.ssh"
+    chmod 700 "$HOME/.ssh"
+    ${pkgs.openssh}/bin/ssh-keygen -t ed25519 -C "brpol@$(hostname)" -f "$SSH_KEY"
+  '';
+
+  # Authenticates the GitHub CLI with SSH protocol via browser OAuth if not already logged in.
+  ensure-gh-auth = pkgs.writeShellScriptBin "ensure-gh-auth" ''
+    set -euo pipefail
+    if ${pkgs.gh}/bin/gh auth status --hostname github.com >/dev/null 2>&1; then
+      echo "Already authenticated with github.com, skipping login." >&2
+      exit 0
+    fi
+    ${pkgs.gh}/bin/gh auth login \
+      --hostname github.com \
+      --git-protocol ssh \
+      --web
+  '';
+
+  # Uploads ~/.ssh/id_ed25519.pub to the authenticated GitHub account; skips if already registered.
+  ensure-gh-ssh-key = pkgs.writeShellScriptBin "ensure-gh-ssh-key" ''
+    set -euo pipefail
+    SSH_KEY="$HOME/.ssh/id_ed25519"
+    if ${pkgs.gh}/bin/gh ssh-key add "$SSH_KEY.pub" \
+      --title "brpol@$(hostname)" \
+      --type authentication 2>/dev/null; then
+      echo "SSH public key added to GitHub." >&2
+    else
+      echo "SSH key may already be registered with GitHub (skipping)." >&2
+    fi
+  '';
+
   # Checks for ~/.config/sops/age/keys.txt and, if absent, fetches the raw
   # AGE-SECRET-KEY-1... value from a Bitwarden secure note named "age-private-key",
   # writes it to the key file, and sets permissions. Exits non-zero on any failure.
@@ -94,6 +159,10 @@ in {
     ensure-age-key
     edit-nix-secrets
     update-secret-keys
+    ensure-ssh-key
+    ensure-gh-auth
+    ensure-gh-ssh-key
+    brpol-setup
   ];
 
   # Desktop notification at graphical login if age key is absent.

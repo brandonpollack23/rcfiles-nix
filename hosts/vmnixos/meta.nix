@@ -8,5 +8,4 @@ in {
   userAuthorizedKeys = {
     brpol = [ncc1701eKey];
   };
-  grubTheme = ../../grub-themes/fallout;
 }
