@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 15 * * *' # midnight JST (UTC+9)
+    - cron: "0 15 * * *" # midnight JST (UTC+9)
   workflow_dispatch:
 
 permissions:
@@ -30,7 +30,7 @@ jobs:
         with:
           name: brandonpollack23
           extraPullNames: nix-community,watersucks
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Update flake inputs
         run: nix flake update
@@ -60,7 +60,6 @@ jobs:
     needs: update
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
       matrix:
         host: ${{ fromJson(needs.update.outputs.hosts) }}
     steps:
@@ -74,7 +73,7 @@ jobs:
         with:
           name: brandonpollack23
           extraPullNames: nix-community,watersucks
-          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
 
       - name: Build ${{ matrix.host }}
         run: |

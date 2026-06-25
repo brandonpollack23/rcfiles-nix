@@ -3,13 +3,17 @@
 {
   pkgs,
   config,
-  rootAuthorizedKeys,
   neovimPkg,
   nixosCliPkg,
-  sopsNixModule,
   ...
 }: {
-  imports = [sopsNixModule];
+  imports = [
+    ./common/nix-daemon.nix
+    ./common/secrets.nix
+    ./common/i18n.nix
+    ./common/ssh.nix
+  ];
+
   # Base CLI tools available on every host. GUI apps belong in modules/desktop.nix.
   environment.systemPackages = with pkgs;
     [
@@ -42,82 +46,9 @@
       nixosCliPkg.${pkgs.stdenv.hostPlatform.system}.default # nixos CLI tool
     ];
 
-  nix = {
-    settings = {
-      auto-optimise-store = true;
-      substituters = [
-        "https://cache.nixos.org"
-        "https://nix-community.cachix.org"
-        "https://watersucks.cachix.org"
-        "https://brandonpollack23.cachix.org"
-      ];
-      trusted-public-keys = [
-        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "watersucks.cachix.org-1:6gadPC5R8iLWQ3EUtfu3GFrVY7X6I4Fwz/ihW25Jbv8="
-        "brandonpollack23.cachix.org-1:Sp+6/7oI23QPPUBx+a5Kuv1r4WaqTrEIJ/FBQ3CkVUY="
-      ];
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      post-build-hook = pkgs.writeShellScript "cachix-push" ''
-        set -eu
-        set -f
-        export IFS=' '
-        export CACHIX_AUTH_TOKEN="$(cat ${config.sops.secrets.cachix-brandonpollack23.path})"
-        exec ${pkgs.cachix}/bin/cachix push brandonpollack23 $OUT_PATHS
-      '';
-    };
-    optimise.automatic = true;
-    gc = {
-      automatic = true;
-      dates = "*-*-* 00:03:30";
-      options = "--delete-older-than 7d";
-    };
-  };
-
-  sops.defaultSopsFile = ../secrets/secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  sops.secrets.cachix-brandonpollack23 = {};
-
-  # Warns if the sops primary key (for editing and setup of this machine's key) is not set up yet.
-  environment.interactiveShellInit = ''
-    if [ "$(id -un)" = "brpol" ] && [ ! -f "$HOME/.config/sops/age/keys.txt" ]; then
-      printf '\033[1;33m\nWARNING: personal age key not found.\033[0m\n'
-      printf 'Run \033[1mensure-age-key\033[0m to fetch from Bitwarden,\n'
-      printf 'or \033[1medit-nix-secrets\033[0m / \033[1mupdate-secret-keys\033[0m will do it on demand.\n\n'
-    fi
-  '';
-
   security.sudo.extraConfig = ''
     Defaults timestamp_timeout=120
   '';
-
-  i18n = {
-    defaultLocale = "en_US.UTF-8";
-    inputMethod = {
-      enable = true;
-      type = "fcitx5";
-      fcitx5.addons = with pkgs; [
-        fcitx5-mozc
-        fcitx5-gtk
-      ];
-    };
-    extraLocaleSettings = {
-      LC_ADDRESS = "ja_JP.UTF-8";
-      LC_IDENTIFICATION = "ja_JP.UTF-8";
-      LC_MEASUREMENT = "ja_JP.UTF-8";
-      LC_MONETARY = "ja_JP.UTF-8";
-      LC_NAME = "ja_JP.UTF-8";
-      LC_NUMERIC = "ja_JP.UTF-8";
-      LC_PAPER = "ja_JP.UTF-8";
-      LC_TELEPHONE = "ja_JP.UTF-8";
-      LC_TIME = "ja_JP.UTF-8";
-    };
-  };
-
-  nixpkgs.config.allowUnfree = true;
 
   environment.variables.EDITOR = "nvim";
   environment.shellAliases.nrs = "${config.rcfiles_nix.rebuild.script}";
@@ -125,16 +56,4 @@
   # zsh.enable makes zsh available as a login shell system-wide; individual
   # users opt in by setting shell = pkgs.zsh (or bashInteractive) in their nixos.nix.
   programs.zsh.enable = true;
-
-  services.openssh = {
-    enable = true;
-    settings = {
-      X11Forwarding = true;
-      PermitRootLogin = "yes";
-      PasswordAuthentication = false;
-    };
-    openFirewall = true;
-  };
-
-  users.users.root.openssh.authorizedKeys.keys = rootAuthorizedKeys;
 }
