@@ -40,8 +40,10 @@ jobs:
           result=$(nix build .#nixosConfigurations.vmnixos.config.system.build.toplevel --no-link --print-out-paths --print-build-logs)
           echo "VMNIXOS_PATH=$result" >> "$GITHUB_ENV"
 
-      - name: Pin vmnixos build in Cachix (keep latest only)
-        run: cachix pin brandonpollack23 vmnixos-latest "$VMNIXOS_PATH" --keep-revisions 1
+      - name: Push and pin vmnixos build in Cachix (keep latest only)
+        run: |
+          cachix push brandonpollack23 "$VMNIXOS_PATH"
+          cachix pin brandonpollack23 vmnixos-latest "$VMNIXOS_PATH" --keep-revisions 1
 
       - name: Commit and push if changed
         run: |
