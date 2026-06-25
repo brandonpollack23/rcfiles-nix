@@ -1,5 +1,3 @@
-- get hostname from file/pathname in host config
-
 - add gh key to secrets and share with brpol
 
 - is it possible to move scripts into their own files for lsp/highlighting purposes and pull them into the nix config?
@@ -9,7 +7,7 @@
 
 - find an way to find location of the flake so i dont have to hard code commands that require it.
 
-- lots of if darwin import this/that can we streamline that?
+- when i create a new host, how can i get hardware-configuration before creating the image?
 
 - make sure the flake is in the path you specify in autoUpgrade.flakePath
 

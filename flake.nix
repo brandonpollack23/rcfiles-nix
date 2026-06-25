@@ -21,24 +21,17 @@
   };
 
   outputs = inputs: let
+    lib = inputs.nixpkgs.lib;
     myLib = import ./lib inputs;
-    keys.ncc1701e = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ+LxALPXfkVQ3MxQu3h0pkZ3o+OtY5cSfFgf5lkTlD0 brpol@ncc-1701e";
-  in {
-    nixosConfigurations = {
-      vmnixos = myLib.mkHost {
-        hostname = "vmnixos";
-        stateVersion = "26.05";
-        enableDesktop = true;
-        users = ["brpol"];
-        rootAuthorizedKeys = [keys.ncc1701e];
-        userAuthorizedKeys = {
-          brpol = [keys.ncc1701e];
-        };
-        grubTheme = ./grub-themes/fallout;
-      };
 
-      # Adding a second host is this easy:
-      # another-host = myLib.mkHost { hostname = "another-host"; users = [ "brpol" ]; };
-    };
+    # Auto-discover hosts: every subdirectory of hosts/ that contains a meta.nix becomes a
+    # nixosConfiguration. Stubs without meta.nix are silently skipped.
+    # To add a host: create hosts/<name>/{default,hardware-configuration,meta}.nix.
+    hostDirs = lib.filterAttrs (_: t: t == "directory") (builtins.readDir ./hosts);
+    hostNames = lib.attrNames (lib.filterAttrs (name: _: (builtins.readDir ./hosts/${name}) ? "meta.nix") hostDirs);
+  in {
+    nixosConfigurations =
+      lib.genAttrs hostNames
+      (hostname: myLib.mkHost (import ./hosts/${hostname}/meta.nix // {inherit hostname;}));
   };
 }

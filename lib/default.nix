@@ -1,5 +1,4 @@
-# To add a new host/machine:
-#   nixosConfigurations.my-host = myLib.mkHost { hostname = "my-host"; users = [ "brpol" ]; };
+# To add a new host/machine, add an entry to hostConfigs in flake.nix — the key becomes hostname.
 {
   nixpkgs,
   home-manager,
@@ -33,7 +32,7 @@ in rec {
   in
     nixSystem {
       specialArgs = {
-        inherit stateVersion rootAuthorizedKeys grubTheme isDarwin;
+        inherit hostname stateVersion rootAuthorizedKeys grubTheme isDarwin;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
         sopsNixModule = sops-nix.nixosModules.sops;
