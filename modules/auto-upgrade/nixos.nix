@@ -30,7 +30,9 @@ in {
       after = ["network-online.target"];
       wants = ["network-online.target"];
       serviceConfig.Type = "oneshot";
-      environment.HOME = "/root";
+      environment = {
+        HOME = "/root";
+      };
       path = with pkgs; [git nix coreutils gnutar gzip xz];
       script = ''
         set -uo pipefail
@@ -90,6 +92,13 @@ in {
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${notifyScript}";
+      };
+    };
+
+    programs.git = {
+      enable = true;
+      config = {
+        safe.directory = cfg.flakePath;
       };
     };
 

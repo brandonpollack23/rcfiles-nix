@@ -1,7 +1,3 @@
-- add gh key to secrets and share with brpol
-
-- is it possible to move scripts into their own files for lsp/highlighting purposes and pull them into the nix config?
-
 - further organize common.nix module
 - further organize home nix module (scripts etc that are in let)
 
