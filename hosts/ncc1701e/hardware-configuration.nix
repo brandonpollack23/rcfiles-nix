@@ -36,7 +36,7 @@
   fileSystems."/mnt/Memory_Alpha" = {
     device = "/dev/disk/by-uuid/A6188E2E188DFE15";
     fsType = "ntfs3";
-    options = ["rw" "uid=1000" "gid=1000" "iocharset=utf8"];
+    options = ["rw" "uid=1000" "gid=1000" "iocharset=utf8" "exec"];
   };
 
   swapDevices = [];

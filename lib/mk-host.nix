@@ -22,6 +22,7 @@ in
     stateVersion, # e.g. "26.05" — single source of truth for system + home stateVersion
     isDarwin ? false, # true for Macintosh
     enableDesktop ? true, # include modules/desktop.nix (GUI stack, sound, printing)
+    enableSteam ? false, # whether or not to enable steam
     users ? ["brpol"], # list of usernames; each must have users/<name>/nixos.nix + home/
     rootAuthorizedKeys ? [], # SSH public keys granted access to root on this host (escape hatch)
     userAuthorizedKeys ? {}, # attrset of username -> SSH public keys (escape hatch)
@@ -50,13 +51,14 @@ in
   in
     nixSystem {
       specialArgs = {
-        inherit hostname stateVersion isDarwin;
+        inherit hostname stateVersion isDarwin enableSteam;
         rootAuthorizedKeys = finalRootKeys;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
         sopsNixModule = sops-nix.nixosModules.sops;
       };
       modules =
+        # Infrastructure and shared policy.
         [
           # Opinionated nix daemon settings from Determinate Systems.
           determinate.nixosModules.default
@@ -74,9 +76,19 @@ in
           # nrs alias wrapping the platform rebuild command. Disable per-host
           # with rcfiles_nix.rebuild.enable = false.
           ../modules/rebuild.nix
-
-          # Wires home-manager into NixOS (or Darwin) so user home configs are
-          # built as part of nixos-rebuild.
+        ]
+        # User layer — two separate systems that both iterate over `users`, but
+        # operate in different module systems and own different concerns.
+        #
+        # 1. System modules (NixOS module system): define WHO the user IS —
+        #    account, shell, group membership, uid. These set users.users.<name>
+        #    options and must exist at the OS level.
+        ++ builtins.concatMap (userModules {inherit isDarwin;}) users
+        # 2. Home Manager (HM subsystem): defines WHAT the user's environment
+        #    LOOKS LIKE — dotfiles, user packages, ~/.config. Evaluated by HM's
+        #    own module system inside the home-manager NixOS module, not by the
+        #    NixOS option evaluator directly.
+        ++ [
           home-manager-module
           {
             home-manager.useGlobalPkgs = true;
@@ -98,6 +110,5 @@ in
           }
         ]
         ++ lib.optional enableDesktop ../modules/desktop.nix
-        # Pull in each user's system-level modules (shared default + OS-specific).
-        ++ builtins.concatMap (userModules {inherit isDarwin;}) users;
+        ++ lib.optional enableSteam ../modules/steam.nix;
     }
