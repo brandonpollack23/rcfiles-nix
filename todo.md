@@ -11,6 +11,8 @@
 
 - make sure the flake is in the path you specify in autoUpgrade.flakePath
 
+- google drive setup
+
 - it looks like we can get at ssh keys from nix, lets make the server accessible by public key from my other devices, and my desktop accessible via laptop
 
 - setup home
