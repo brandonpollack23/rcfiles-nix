@@ -110,6 +110,7 @@ in
           }
         ]
         ++ lib.optional isDarwin ../modules/darwin.nix
+        ++ lib.optional (!isDarwin) ../modules/nixos.nix
         ++ lib.optional enableDesktop ../modules/desktop.nix
         ++ lib.optional enableSteam ../modules/steam.nix;
     }

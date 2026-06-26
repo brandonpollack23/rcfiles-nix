@@ -31,11 +31,7 @@
       '';
     };
     optimise.automatic = true;
-    gc = {
-      automatic = true;
-      dates = "*-*-* 00:03:30";
-      options = "--delete-older-than 7d";
-    };
+    # gc is handled by nh
   };
 
   nixpkgs.config.allowUnfree = true;

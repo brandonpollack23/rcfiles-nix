@@ -21,11 +21,4 @@
       description = "Directory for persisting upgrade failure markers.";
     };
   };
-
-  config = {
-    environment.etc."rcfiles-nix/flake-path" = {
-      text = "${config.users.users.brpol.home}/rcfiles-nix\n";
-      mode = "0644";
-    };
-  };
 }

@@ -29,8 +29,11 @@ this file, so keep all repository-wide agent instructions here.
 | `hosts/<name>/default.nix` | Machine-specific boot, filesystems, networking identity, timezone, and hardware imports |
 | `modules/common.nix` | Baseline CLI packages and settings shared by every host |
 | `modules/common/` | Focused shared modules for Nix, secrets, locale, and SSH |
+| `modules/nixos.nix` | NixOS-only shared policy (e.g. `programs.nh` store cleanup) |
+| `modules/darwin.nix` | Darwin-only shared policy (currently empty placeholder) |
 | `modules/desktop.nix` | GUI packages and desktop services, gated by `enableDesktop` |
 | `modules/{auto-upgrade,rebuild}.nix` | Cross-platform dispatch to NixOS or Darwin implementations |
+| `old/` | Dormant code kept for reference; nothing here is imported |
 | `users/<name>/default.nix` | Cross-platform system-level user identity |
 | `users/<name>/{nixos,darwin}.nix` | Platform-specific system-level user configuration |
 | `users/<name>/home/` | Home Manager configuration, packages, dotfiles, and user scripts |

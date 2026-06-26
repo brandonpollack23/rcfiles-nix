@@ -31,7 +31,7 @@ in {
 
         STATE_DIR=${stateDir}
         FAILURE_FILE="$STATE_DIR/failure"
-        FLAKE_PATH=$(cat /etc/rcfiles-nix/flake-path)
+        NH_FLAKE=${lib.escapeShellArg "${config.users.users.brpol.home}/rcfiles-nix"}
 
         mkdir -p "$STATE_DIR"
         chown brpol:staff "$STATE_DIR"
@@ -43,20 +43,20 @@ in {
 
         # Pull via HTTPS — no SSH key required; leaves the repo's configured
         # remote unchanged so the user can still push via SSH.
-        git -c safe.directory="$FLAKE_PATH" -C "$FLAKE_PATH" \
+        git -c safe.directory="$NH_FLAKE" -C "$NH_FLAKE" \
           pull --ff-only https://github.com/brandonpollack23/rcfiles-nix.git
         pull_rc=$?
 
         if [ $pull_rc -ne 0 ]; then
-          record_failure "git pull --ff-only failed; manually resolve in $FLAKE_PATH and try again"
+          record_failure "git pull --ff-only failed; manually resolve in $NH_FLAKE and try again"
           exit 1
         fi
 
-        darwin-rebuild switch --flake "$FLAKE_PATH"
+        darwin-rebuild switch --flake "$NH_FLAKE"
         rebuild_rc=$?
 
         if [ $rebuild_rc -ne 0 ]; then
-          record_failure "darwin-rebuild switch failed; manually resolve in $FLAKE_PATH and try again"
+          record_failure "darwin-rebuild switch failed; manually resolve in $NH_FLAKE and try again"
           exit 1
         fi
 

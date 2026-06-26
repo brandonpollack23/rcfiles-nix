@@ -11,9 +11,12 @@ Welp.
 - `lib/default.nix` — `mkHost` function; the single entry point for all host definitions
 - `flake.nix` — calls `mkHost` per host; SSH keys and per-host flags live here
 - `modules/common.nix` — baseline for every host: packages, nix settings, SSH, sops secrets
+- `modules/nixos.nix` — NixOS-only shared policy (store cleanup via `programs.nh`)
+- `modules/darwin.nix` — Darwin-only shared policy (placeholder)
 - `modules/desktop.nix` — GUI stack, gated by `enableDesktop` in `mkHost`
 - `hosts/<name>/` — host-specific hardware + bootloader config
 - `users/<name>/` — system-level user config (`nixos.nix`) and home-manager config (`home/`)
+- `old/` — dormant code kept for reference; nothing here is imported or active
 
 Packages from flake inputs (neovim, nixos-cli) are resolved in `lib/default.nix` and passed
 via `specialArgs` — modules must not reach into `inputs` directly.

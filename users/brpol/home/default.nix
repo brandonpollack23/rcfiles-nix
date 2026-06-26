@@ -38,7 +38,7 @@
   # Clone rcfiles-nix if it doesn't exist yet (e.g. on a fresh machine).
   # HTTPS is used so no SSH key is required; brpol-setup switches the remote to SSH.
   home.activation.cloneRcfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    _flake_path=$(cat /etc/rcfiles-nix/flake-path 2>/dev/null || echo "$HOME/rcfiles-nix")
+    _flake_path=''${NH_FLAKE:-$HOME/rcfiles-nix}
     if [ ! -d "$_flake_path/.git" ]; then
       ${pkgs.git}/bin/git clone \
         https://github.com/brandonpollack23/rcfiles-nix.git \
