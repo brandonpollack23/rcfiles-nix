@@ -43,8 +43,14 @@
       lib.genAttrs hostNames
       (hostname: myLib.mkHost (import ./hosts/${hostname}/meta.nix // {inherit hostname hostUserKeys;}));
 
-    checks.x86_64-linux.ssh-keyring = import ./tests/ssh-keyring.nix {
-      pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+    checks.x86_64-linux = {
+      ssh-keyring = import ./tests/ssh-keyring.nix {
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      };
+
+      rcfiles-seeding = import ./tests/rcfiles-seeding.nix {
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      };
     };
   };
 }

@@ -1,4 +1,6 @@
 {pkgs, ...}: let
+  seed-rcfiles-from-nix-store = import ./seed-rcfiles-from-nix-store.nix {inherit pkgs;};
+
   brpol-setup = pkgs.writeShellApplication {
     name = "brpol-setup";
     runtimeInputs = [ensure-age-key ensure-ssh-key ensure-gh-auth ensure-gh-ssh-key register-ssh-key-nix];
@@ -48,6 +50,7 @@
   };
 in {
   home.packages = [
+    seed-rcfiles-from-nix-store
     brpol-setup
     ensure-age-key
     edit-nix-secrets

@@ -1,5 +1,3 @@
-- make it so the cloning of rcfiles is included in the os image (but keep the clone script there to replace it)
-
 - setup home
   - setup desktop background revolving bing
   - google drive setup

@@ -7,6 +7,7 @@
   sops-nix,
   darwin ? null,
   resolveHostKeys,
+  self,
 }: let
   userModules = {isDarwin}: user: [
     ../users/${user}/default.nix
@@ -94,7 +95,12 @@ in
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             # stateVersion flows into every user's home config from the single mkHost param.
-            home-manager.extraSpecialArgs = {inherit stateVersion;};
+            # rcfilesSrc/rcfilesRev seed ~/rcfiles-nix on first activation from the Nix closure.
+            home-manager.extraSpecialArgs = {
+              inherit stateVersion;
+              rcfilesSrc = self.outPath;
+              rcfilesRev = self.rev or null;
+            };
             # Each user gets their own users/<name>/home/ directory as their HM config.
             home-manager.users =
               lib.genAttrs users (user: import ../users/${user}/home);
