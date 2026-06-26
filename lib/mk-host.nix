@@ -109,6 +109,7 @@ in
               mergedUserKeys;
           }
         ]
+        ++ lib.optional isDarwin ../modules/darwin.nix
         ++ lib.optional enableDesktop ../modules/desktop.nix
         ++ lib.optional enableSteam ../modules/steam.nix;
     }
