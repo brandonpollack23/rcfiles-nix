@@ -5,10 +5,15 @@
   neovim,
   nixos-cli,
   sops-nix,
+  tmux-menus,
+  tmux-easy-motion,
   darwin ? null,
-  resolveHostKeys,
   self,
 }: let
+  # Lib helpers imported directly; Nix is lazy so there's no need to thread these
+  # through lib/default.nix.
+  resolveHostKeys = import ./resolve-host-keys.nix {inherit lib;};
+  hostHomeOverrides = import ./host-home-overrides.nix {inherit lib;};
   userModules = {isDarwin}: user: [
     ../users/${user}/default.nix
     ../users/${user}/${
@@ -56,13 +61,14 @@ in
         rootAuthorizedKeys = finalRootKeys;
         neovimPkg = neovim.packages;
         nixosCliPkg = nixos-cli.packages;
-        sopsNixModule = sops-nix.nixosModules.sops;
       };
       modules =
         # Infrastructure and shared policy.
         [
           # Opinionated nix daemon settings from Determinate Systems.
           determinate.nixosModules.default
+
+          sops-nix.nixosModules.sops
 
           # Host-specific config: bootloader, hostname, timezone, stateVersion, hardware.
           ../hosts/${hostname}
@@ -94,16 +100,24 @@ in
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.sharedModules = [sops-nix.homeManagerModules.sops];
             # stateVersion flows into every user's home config from the single mkHost param.
             # rcfilesSrc/rcfilesRev seed ~/rcfiles-nix on first activation from the Nix closure.
             home-manager.extraSpecialArgs = {
               inherit stateVersion;
+              # Attrset of flake-pinned tmux plugin sources passed to users/brpol/home/tmux.nix.
+              # Add new plugins here and as flake inputs; flake.lock tracks the hashes.
+              tmuxExtraPlugins = {inherit tmux-menus tmux-easy-motion;};
               rcfilesSrc = self.outPath;
               rcfilesRev = self.rev or null;
             };
-            # Each user gets their own users/<name>/home/ directory as their HM config.
-            home-manager.users =
-              lib.genAttrs users (user: import ../users/${user}/home);
+            # Each user gets their own users/<name>/home/ directory as their HM config,
+            # plus any per-host overrides under hosts/<hostname>/home-overrides/<user>/.
+            home-manager.users = lib.genAttrs users (user: {
+              imports =
+                [../users/${user}/home]
+                ++ hostHomeOverrides {inherit hostname user;};
+            });
           }
 
           # Per-user SSH authorized keys, injected here so user modules stay key-agnostic.

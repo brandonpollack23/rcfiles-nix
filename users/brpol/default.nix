@@ -9,6 +9,6 @@
     isNormalUser = true;
     description = "Brandon Pollack";
     extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.bashInteractive;
+    shell = pkgs.zsh;
   };
 }

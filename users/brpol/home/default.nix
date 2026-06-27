@@ -11,17 +11,24 @@
 }: let
   seed-rcfiles-from-nix-store = import ./scripts/seed-rcfiles-from-nix-store.nix {inherit pkgs;};
 in {
-  imports = [./scripts];
+  imports = [
+    ./scripts
+    ./secrets.nix
+    ./rust.nix
+    ./git.nix
+    ./jj.nix
+    ./zsh
+    ./tmux.nix
+    ./timewarrior.nix
+    ./vscode.nix
+    ./nvim.nix
+  ];
 
   home.username = "brpol";
   home.homeDirectory = "/home/brpol";
 
   # Passed in from mkHost via home-manager.extraSpecialArgs — single source of truth.
   home.stateVersion = stateVersion;
-
-  home.sessionVariables = {
-    EDITOR = "nvim";
-  };
 
   # Desktop notification at graphical login if age key is absent.
   # XDG autostart is used instead of a systemd user service because Cinnamon+LightDM
@@ -48,25 +55,25 @@ in {
     _flake_path=''${NH_FLAKE:-$HOME/rcfiles-nix}
     if [ ! -d "$_flake_path/.git" ]; then
       ${
-        if rcfilesSrc != null
-        then ''
-          ${seed-rcfiles-from-nix-store}/bin/seed-rcfiles-from-nix-store "$_flake_path" "${rcfilesSrc}"
-          if ${pkgs.git}/bin/git -C "$_flake_path" fetch origin 2>/dev/null; then
-            ${
-              if rcfilesRev != null
-              then ''${pkgs.git}/bin/git -C "$_flake_path" reset --hard "${rcfilesRev}" 2>/dev/null \
-                  || ${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null \
-                  || true''
-              else ''${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null || true''
-            }
-          fi
-        ''
-        else ''
-          ${pkgs.git}/bin/git clone \
-            https://github.com/brandonpollack23/rcfiles-nix.git \
-            "$_flake_path"
-        ''
-      }
+      if rcfilesSrc != null
+      then ''
+        ${seed-rcfiles-from-nix-store}/bin/seed-rcfiles-from-nix-store "$_flake_path" "${rcfilesSrc}"
+        if ${pkgs.git}/bin/git -C "$_flake_path" fetch origin 2>/dev/null; then
+          ${
+          if rcfilesRev != null
+          then ''            ${pkgs.git}/bin/git -C "$_flake_path" reset --hard "${rcfilesRev}" 2>/dev/null \
+                              || ${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null \
+                              || true''
+          else ''${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null || true''
+        }
+        fi
+      ''
+      else ''
+        ${pkgs.git}/bin/git clone \
+          https://github.com/brandonpollack23/rcfiles-nix.git \
+          "$_flake_path"
+      ''
+    }
     fi
     unset _flake_path
   '';

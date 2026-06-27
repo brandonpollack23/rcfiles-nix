@@ -22,7 +22,10 @@
       bat # cat with wings
       bitwarden-cli
       cachix # nix caching system
+      chafa # image-to-terminal renderer (used by cati alias)
       curl
+      difftastic # structural diff tool (used by jj)
+      eza # modern ls replacement
       fastfetch
       fh # flakehub
       fzf
@@ -30,16 +33,22 @@
       git
       htop
       jj # version control of the modern times, reminds me of fig
-      jq
+      jq # json query language and formatter
+      lolcat # rainbow text (welcome message)
+      mise # polyglot runtime manager
       noti # xplatform notifications tool
       ripgrep
       sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
       ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
+      starship # cross-shell prompt
       timew-sync-client
       timewarrior # time tracker
       tmux
       tree
       wget
+      wl-clipboard # Wayland clipboard (wl-copy/wl-paste)
+      xclip # X11 clipboard (current Cinnamon session)
+      zoxide # smarter cd
       zsh
     ]
     ++ [
@@ -57,4 +66,10 @@
   # zsh.enable makes zsh available as a login shell system-wide; individual
   # users opt in by setting shell = pkgs.zsh (or bashInteractive) in their nixos.nix.
   programs.zsh.enable = true;
+
+  # pay-respects: corrects the previous command (thefuck successor). The NixOS
+  # module wires the hook into the system-wide interactiveShellInit for bash/zsh/
+  # fish, so every user — brpol, root, and any future account — gets it from this
+  # one declaration rather than a per-user Home Manager opt-in. `f` is the alias.
+  programs.pay-respects.enable = true;
 }

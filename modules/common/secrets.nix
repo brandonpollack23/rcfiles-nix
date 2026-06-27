@@ -1,8 +1,8 @@
-{sopsNixModule, ...}: {
-  imports = [sopsNixModule];
-
+{...}: {
   sops.defaultSopsFile = ../../secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
+
+  # User identity secrets — must be added to secrets/secrets.yaml by running edit-nix-secrets.
   sops.secrets.cachix-brandonpollack23 = {};
 
   # Warns if the sops primary key (for editing and setup of this machine's key) is not set up yet.

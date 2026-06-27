@@ -15,6 +15,7 @@ Welp.
 - `modules/darwin.nix` — Darwin-only shared policy (placeholder)
 - `modules/desktop.nix` — GUI stack, gated by `enableDesktop` in `mkHost`
 - `hosts/<name>/` — host-specific hardware + bootloader config
+- `hosts/<name>/home-overrides/<user>/` — per-host home-manager tweaks for a user; each `.nix` file (e.g. `git.nix`) is auto-imported and merged onto the matching base module in `users/<user>/home/`
 - `users/<name>/` — system-level user config (`nixos.nix`) and home-manager config (`home/`)
 - `old/` — dormant code kept for reference; nothing here is imported or active
 

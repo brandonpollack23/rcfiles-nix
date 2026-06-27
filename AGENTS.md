@@ -27,6 +27,7 @@ this file, so keep all repository-wide agent instructions here.
 | `lib/default.nix` | `mkHost`, input/package wiring, shared module assembly, and platform selection |
 | `hosts/<name>/meta.nix` | Arguments passed to `mkHost`, such as `stateVersion`, users, SSH keys, and desktop support |
 | `hosts/<name>/default.nix` | Machine-specific boot, filesystems, networking identity, timezone, and hardware imports |
+| `hosts/<name>/home-overrides/<user>/` | Per-host Home Manager overrides for a user, auto-imported by name (e.g. `git.nix` layers onto `users/<user>/home/git.nix`) |
 | `modules/common.nix` | Baseline CLI packages and settings shared by every host |
 | `modules/common/` | Focused shared modules for Nix, secrets, locale, and SSH |
 | `modules/nixos.nix` | NixOS-only shared policy (e.g. `programs.nh` store cleanup) |
@@ -62,6 +63,11 @@ or placeholder host directories in `hosts/`.
   Darwin-only system options belong in the matching platform file.
 - User programs, dotfiles, activation hooks, and user-facing scripts belong
   under `users/<name>/home/`.
+- Machine-specific Home Manager tweaks for a user belong in
+  `hosts/<host>/home-overrides/<user>/<name>.nix`. `mkHost` auto-imports every
+  `.nix` file there into that user's home config, so it merges onto the matching
+  base module (e.g. `git.nix`). Use this instead of ad-hoc untracked includes
+  like `~/.gitconfig.local`.
 - Packages supplied by flake inputs must be resolved in `lib/default.nix` and
   passed through `specialArgs`. Modules must not reach into the flake `inputs`
   attribute set directly.

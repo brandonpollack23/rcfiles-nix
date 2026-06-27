@@ -18,6 +18,15 @@
 
     neovim.url = "github:nix-community/neovim-nightly-overlay";
     nixos-cli.url = "github:nix-community/nixos-cli";
+
+    tmux-menus = {
+      url = "github:jaclu/tmux-menus";
+      flake = false;
+    };
+    tmux-easy-motion = {
+      url = "github:IngoMeyer441/tmux-easy-motion";
+      flake = false;
+    };
   };
 
   outputs = inputs: let

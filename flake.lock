@@ -428,7 +428,9 @@
         "neovim": "neovim",
         "nixos-cli": "nixos-cli",
         "nixpkgs": "nixpkgs_5",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "tmux-easy-motion": "tmux-easy-motion",
+        "tmux-menus": "tmux-menus"
       }
     },
     "sops-nix": {
@@ -448,6 +450,38 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "tmux-easy-motion": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1752246873,
+        "narHash": "sha256-Nxo8fWwgX79CrhUrHhfv8+mz3aUvPAbGmQkY34PQzKo=",
+        "owner": "IngoMeyer441",
+        "repo": "tmux-easy-motion",
+        "rev": "8dfe8aee14c938ec170b3f98ca341055cc960d06",
+        "type": "github"
+      },
+      "original": {
+        "owner": "IngoMeyer441",
+        "repo": "tmux-easy-motion",
+        "type": "github"
+      }
+    },
+    "tmux-menus": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780093489,
+        "narHash": "sha256-4kPz069vfeetIKym+W7fMpbZ4RTIMAw5R2Towke561M=",
+        "owner": "jaclu",
+        "repo": "tmux-menus",
+        "rev": "bc8e42f601f6c038ed23f68a4a086607a91a8d46",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jaclu",
+        "repo": "tmux-menus",
         "type": "github"
       }
     }

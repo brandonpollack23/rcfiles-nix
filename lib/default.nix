@@ -6,13 +6,17 @@
   neovim,
   nixos-cli,
   sops-nix,
+  tmux-menus,
+  tmux-easy-motion,
   darwin ? null,
   self,
   ...
-}: rec {
-  resolveHostKeys = import ./resolve-host-keys.nix {lib = nixpkgs.lib;};
+}: {
+  # mk-host imports the lib helpers it needs (resolveHostKeys, hostHomeOverrides)
+  # directly and builds its own myLib namespace; they don't need to be threaded
+  # through here.
   mkHost = import ./mk-host.nix {
     lib = nixpkgs.lib;
-    inherit home-manager determinate neovim nixos-cli sops-nix darwin resolveHostKeys self;
+    inherit home-manager determinate neovim nixos-cli sops-nix darwin self tmux-menus tmux-easy-motion;
   };
 }

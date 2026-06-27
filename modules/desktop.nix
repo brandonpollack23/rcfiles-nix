@@ -2,9 +2,13 @@
 # Headless/server hosts should omit this.
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    google-chrome
     ghostty
+    google-chrome
     libnotify
+    obsidian
+    vscode
+    wl-clipboard # Wayland clipboard (wl-copy/wl-paste)
+    xclip # X11 clipboard (current Cinnamon session)
   ];
 
   services.xserver = {
