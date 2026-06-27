@@ -69,6 +69,13 @@
     };
 
     plugins = [
+      # fzf-tab must load after compinit but before syntax-highlighting/autosuggestions.
+      # Replaces the default zsh completion menu with fzf.
+      {
+        name = "fzf-tab";
+        src = pkgs.zsh-fzf-tab;
+        file = "share/fzf-tab/fzf-tab.plugin.zsh";
+      }
       {
         name = "zsh-you-should-use";
         src = pkgs.zsh-you-should-use;
