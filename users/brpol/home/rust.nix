@@ -12,19 +12,22 @@
       cat ${lib.escapeShellArg cargoTokenPath}
     '';
   };
+
+  tomlFormat = pkgs.formats.toml {};
 in {
   # This token is for crates.io, whose credential provider is configured under
   # [registry] below. To add another token, declare another sops secret and a
   # provider script that reads its path, following the definitions above.
   sops.secrets."brpol/cargo-registry-token" = {};
 
-  home.file.".cargo/config.toml".text = ''
-    [registry]
-    credential-provider = ["cargo:token-from-stdout", "${lib.getExe cargoTokenProvider}"]
-
-    # For a named registry, add its index and token-specific provider like this:
-    # [registries.example]
-    # index = "sparse+https://registry.example/index/"
-    # credential-provider = ["cargo:token-from-stdout", "/path/to/its/provider"]
-  '';
+  # crates.io (the default registry) credential provider. The value is a command
+  # array: cargo:token-from-stdout runs the given program and reads the token from
+  # its stdout (Cargo Book — Registry Authentication). For a named registry, add
+  # registries.<name>.{index,credential-provider} to the attrset below.
+  home.file.".cargo/config.toml".source = tomlFormat.generate "cargo-config.toml" {
+    registry.credential-provider = [
+      "cargo:token-from-stdout"
+      "${lib.getExe cargoTokenProvider}"
+    ];
+  };
 }
