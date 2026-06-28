@@ -55,8 +55,9 @@
       neovimPkg.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
     ];
 
+  # Cache sudo credentials for 10 minutes.
   security.sudo.extraConfig = ''
-    Defaults timestamp_timeout=120
+    Defaults timestamp_timeout=10
   '';
 
   environment.variables.EDITOR = "nvim";
