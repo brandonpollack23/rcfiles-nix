@@ -1,4 +1,7 @@
-{...}: {
+{
+  lib,
+  pkgs,
+}: {
   programs.zsh = {
     # Global aliases (alias -g). HM emits these at mkOrder 1100, after OMZ (800),
     # so these override common-aliases' defaults. H/T/NUL come from OMZ's
@@ -18,7 +21,8 @@
 
       # Convenience
       ":q" = "exit";
-      mdless = "mdless -I";
+      # Render markdown in a pager
+      mdless = "${lib.getExe pkgs.glow} -p";
 
       # ── Oh-My-Zsh alias overrides ───────────────────────────────────────────
       # The git/systemd/jj aliases now come from OMZ's git/systemd/jj plugins.

@@ -10,10 +10,9 @@
   ];
 
   home.packages = with pkgs; [
-    # Completion libraries added to the user profile so their share/zsh/site-functions
+    # Completion library added to the user profile so its share/zsh/site-functions
     # lands in the HM-managed fpath (picked up at mkOrder 530 even without compinit).
     zsh-completions
-    nix-zsh-completions
   ];
 
   home.sessionVariables = {
@@ -48,7 +47,15 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
-    historySubstringSearch.enable = true;
+
+    defaultKeymap = "viins";
+
+    historySubstringSearch = {
+      enable = true;
+      # ^p / ^n bound by the module; vi-cmd k/j are added in initContent below.
+      searchUpKey = ["^p"];
+      searchDownKey = ["^n"];
+    };
 
     history = {
       size = 50000;
@@ -86,10 +93,6 @@
     initContent = lib.mkMerge [
       # General configuration (mkOrder 1000, replaces the old initExtra).
       ''
-        # ── Completion cache ──────────────────────────────────────────────────
-        zstyle ':completion:*' use-cache on
-        zstyle ':completion:*' cache-path ~/.zsh/cache
-
         # ── fzf-tab ───────────────────────────────────────────────────────────
         # disable sort when completing `git checkout`
         zstyle ':completion:*:git-checkout:*' sort false
@@ -114,12 +117,11 @@
         zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
         # ── Vi mode ───────────────────────────────────────────────────────────
-        bindkey -v
+        # Base keymap is set via programs.zsh.defaultKeymap = "viins".
         bindkey -M viins 'jk' vi-cmd-mode
 
-        # History substring search keybindings (plugin loads at mkOrder 1200).
-        bindkey '^p' history-substring-search-up
-        bindkey '^n' history-substring-search-down
+        # ^p/^n are bound by historySubstringSearch.search{Up,Down}Key; add the
+        # vi-cmd k/j bindings the option can't express.
         bindkey -M vicmd 'k' history-substring-search-up
         bindkey -M vicmd 'j' history-substring-search-down
 
@@ -133,8 +135,8 @@
           echo "Welcome to $HOST!"
         fi
 
-        # ── Machine-local overrides (not tracked in this repo) ───────────────
-        [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+        # Machine-specific shell config belongs in a host override under
+        # hosts/<host>/home-overrides/brpol/, not an untracked ~/.zshrc.local.
       ''
     ];
   };
