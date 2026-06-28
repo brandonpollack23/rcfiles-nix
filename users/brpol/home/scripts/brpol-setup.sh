@@ -1,3 +1,12 @@
+# One-time per-user bootstrap for brpol: fetch the age key, create and upload an
+# SSH key, authenticate gh, switch the rcfiles remote to SSH, and register this
+# host's key in the flake. Idempotent; takes no arguments. Repo location and SSH
+# remote are injected via RCFILES_CHECKOUT_DIR / RCFILES_SSH_URL.
+if [ "$#" -ne 0 ]; then
+  echo "usage: brpol-setup" >&2
+  exit 2
+fi
+
 echo "=== brpol one-time setup ===" >&2
 
 echo "" >&2
@@ -18,8 +27,8 @@ ensure-gh-ssh-key
 
 echo "" >&2
 echo "--- Step 5: switch rcfiles-nix remote to SSH ---" >&2
-_flake_path=$(cat /etc/rcfiles-nix/flake-path 2>/dev/null || echo "$HOME/rcfiles-nix")
-git -C "$_flake_path" remote set-url origin git@github.com:brandonpollack23/rcfiles-nix.git
+_flake_path="$HOME/$RCFILES_CHECKOUT_DIR"
+git -C "$_flake_path" remote set-url origin "$RCFILES_SSH_URL"
 unset _flake_path
 
 echo "" >&2

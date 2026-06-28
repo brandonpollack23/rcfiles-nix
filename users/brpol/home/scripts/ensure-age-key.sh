@@ -1,3 +1,10 @@
+# Fetch brpol's personal age private key from Bitwarden into
+# ~/.config/sops/age/keys.txt if absent. Idempotent; takes no arguments.
+if [ "$#" -ne 0 ]; then
+  echo "usage: ensure-age-key" >&2
+  exit 2
+fi
+
 KEYS_FILE="$HOME/.config/sops/age/keys.txt"
 if [ -f "$KEYS_FILE" ]; then
   echo "Key file ~/.config/sops/age/keys.txt already exists, if you'd like to regenerate please remove it first"

@@ -1,4 +1,12 @@
-SOPS_YAML="$HOME/rcfiles-nix/.sops.yaml"
+# Register this host's SSH-derived age key in .sops.yaml and re-encrypt the
+# secrets file for the updated recipient list. Takes no arguments. Repo location
+# is injected via RCFILES_CHECKOUT_DIR.
+if [ "$#" -ne 0 ]; then
+  echo "usage: update-secret-keys" >&2
+  exit 2
+fi
+
+SOPS_YAML="$HOME/$RCFILES_CHECKOUT_DIR/.sops.yaml"
 ensure-age-key
 
 HOST_AGE_KEY=$(sudo cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age)
