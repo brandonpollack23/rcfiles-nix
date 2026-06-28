@@ -41,7 +41,9 @@ jobs:
       - name: Discover hosts
         id: list-hosts
         run: |
-          hosts=$(ls hosts/ | jq -Rsc '[split("\n") | .[] | select(length > 0)]')
+          # Use the flake's own host discovery (skips dirs without meta.nix)
+          # rather than ls hosts/, so CI builds exactly what the flake exposes.
+          hosts=$(nix eval --json '.#nixosConfigurations' --apply 'builtins.attrNames')
           echo "hosts=$hosts" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push if changed
