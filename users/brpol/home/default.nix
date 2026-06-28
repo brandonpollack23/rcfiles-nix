@@ -10,6 +10,7 @@
   ...
 }: let
   seed-rcfiles-from-nix-store = import ./scripts/seed-rcfiles-from-nix-store.nix {inherit pkgs;};
+  rcfiles = import ../../../lib/rcfiles.nix;
 
   # Desktop notification at graphical login if the personal age key is absent.
   ageKeyMissingNotify = pkgs.makeDesktopItem {
@@ -62,7 +63,17 @@ in {
   # to populate full history; it is tolerated if the machine is offline at first boot.
   # brpol-setup switches the remote from HTTPS to SSH after credentials are available.
   home.activation.cloneRcfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    _flake_path=''${NH_FLAKE:-$HOME/rcfiles-nix}
+    _flake_path=''${NH_FLAKE:-$HOME/${rcfiles.checkoutDir}}
+
+    # Validate the target before doing anything destructive (rm -rf below).
+    case "$_flake_path" in
+      /*) ;;
+      *)
+        echo "cloneRcfiles: refusing to seed non-absolute path: $_flake_path" >&2
+        exit 1
+        ;;
+    esac
+
     if [ ! -d "$_flake_path/.git" ]; then
       ${
       if rcfilesSrc != null
@@ -76,11 +87,17 @@ in {
                               || true''
           else ''${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null || true''
         }
+        else
+          # Offline first activation: the seed left an initialized-but-historyless
+          # .git (git init + remote add, no fetched commits). Drop it — keeping the
+          # seeded working files — so a later online activation re-enters this block
+          # and retries the fetch instead of seeing .git and skipping forever.
+          ${pkgs.coreutils}/bin/rm -rf "$_flake_path/.git"
         fi
       ''
       else ''
         ${pkgs.git}/bin/git clone \
-          https://github.com/brandonpollack23/rcfiles-nix.git \
+          ${lib.escapeShellArg rcfiles.repoUrl} \
           "$_flake_path"
       ''
     }
