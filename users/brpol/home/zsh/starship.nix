@@ -2,7 +2,16 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  # Package-qualified executables so the prompt doesn't depend on PATH.
+  git = lib.getExe pkgs.git;
+  jj = lib.getExe' pkgs.jujutsu "jj";
+  date = lib.getExe' pkgs.coreutils "date";
+  awk = lib.getExe' pkgs.gawk "awk";
+  starship-jj = lib.getExe pkgs.starship-jj;
+
+  tomlFormat = pkgs.formats.toml {};
+in {
   home.packages = [pkgs.starship-jj];
 
   # ── Starship prompt ───────────────────────────────────────────────────────
@@ -45,7 +54,7 @@
 
       custom.utc_time = {
         description = "Current UTC time";
-        command = "date -u '+%H:%M:%S (UTC)'";
+        command = "${date} -u '+%H:%M:%S (UTC)'";
         when = true;
         format = "[$output]($style)";
         style = "bold blue";
@@ -65,8 +74,8 @@
       git_status.disabled = true;
 
       custom.git_branch = {
-        when = "git rev-parse --is-inside-work-tree 2>/dev/null && ! jj root --ignore-working-copy 2>/dev/null";
-        command = "git branch --show-current 2>/dev/null";
+        when = "${git} rev-parse --is-inside-work-tree 2>/dev/null && ! ${jj} root --ignore-working-copy 2>/dev/null";
+        command = "${git} branch --show-current 2>/dev/null";
         format = "[ $output]($style) ";
         style = "bold purple";
         shell = ["sh" "-c"];
@@ -74,9 +83,9 @@
       };
 
       custom.git_status = {
-        when = "git rev-parse --is-inside-work-tree 2>/dev/null && ! jj root --ignore-working-copy 2>/dev/null";
+        when = "${git} rev-parse --is-inside-work-tree 2>/dev/null && ! ${jj} root --ignore-working-copy 2>/dev/null";
         command = ''
-          git status --porcelain 2>/dev/null | awk '
+          ${git} status --porcelain 2>/dev/null | ${awk} '
             /^\?\? /     { u=1 }
             /^[MADRC]  / { s=1 }
             /^.[MADRC]/  { m=1 }
@@ -95,7 +104,7 @@
         command = "prompt";
         format = "$output";
         ignore_timeout = true;
-        shell = ["starship-jj" "--ignore-working-copy" "starship"];
+        shell = [starship-jj "--ignore-working-copy" "starship"];
         use_stdin = false;
       };
 
@@ -119,25 +128,29 @@
     };
   };
 
-  xdg.configFile."starship-jj/starship-jj.toml".text = ''
-    module_separator = " "
-    reset_color = false
+  xdg.configFile."starship-jj/starship-jj.toml".source = tomlFormat.generate "starship-jj.toml" {
+    module_separator = " ";
+    reset_color = false;
 
-    [bookmarks]
-    search_depth = 100
-    exclude = []
+    bookmarks = {
+      search_depth = 100;
+      exclude = [];
+    };
 
-    [[module]]
-    type = "Symbol"
-    symbol = "󱗆 "
-    color = "Blue"
-
-    [[module]]
-    type = "Bookmarks"
-    separator = " "
-    color = "Magenta"
-    behind_symbol = "⇡"
-    surround_with_quotes = false
-    ignore_empty_commits = "None"
-  '';
+    module = [
+      {
+        type = "Symbol";
+        symbol = "󱗆 ";
+        color = "Blue";
+      }
+      {
+        type = "Bookmarks";
+        separator = " ";
+        color = "Magenta";
+        behind_symbol = "⇡";
+        surround_with_quotes = false;
+        ignore_empty_commits = "None";
+      }
+    ];
+  };
 }
