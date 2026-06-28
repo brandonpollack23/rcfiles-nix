@@ -25,7 +25,7 @@ in {
     historyLimit = 50000;
     escapeTime = 0;
     baseIndex = 1;
-    terminal = "screen-256color";
+    terminal = "tmux-256color";
     aggressiveResize = true;
     sensibleOnTop = false;
     mouse = true;
@@ -67,9 +67,11 @@ in {
     extraConfig = ''
       # ── Terminal passthrough ───────────────────────────────────────────────
       set -g allow-passthrough on
-      set -ga update-environment TERM
+      # Import TERM_PROGRAM from the client, but never TERM — tmux owns its
+      # internal TERM (tmux-256color); overwriting it breaks terminfo inside.
       set -ga update-environment TERM_PROGRAM
-      set-option -sa terminal-overrides ",xterm-256color:RGB"
+      # Modern truecolor advertisement via terminal-features (FAQ-recommended).
+      set -as terminal-features ",xterm-256color:RGB"
 
       # ── Window/pane settings ───────────────────────────────────────────────
       set-option -g allow-rename off
@@ -107,11 +109,13 @@ in {
       bind -n C-M-t new-window
 
       # ── Pane resizing ──────────────────────────────────────────────────────
+      # Uppercase H/J/K/L, repeatable (-r). C-h/C-l are reserved for window
+      # reordering below, so resizing can't use them without clobbering.
       bind = select-layout -E
-      bind -r C-j resize-pane -D 3
-      bind -r C-k resize-pane -U 3
-      bind -r C-l resize-pane -L 3
-      bind -r C-h resize-pane -R 3
+      bind -r H resize-pane -L 3
+      bind -r J resize-pane -D 3
+      bind -r K resize-pane -U 3
+      bind -r L resize-pane -R 3
 
       # ── Window reordering ──────────────────────────────────────────────────
       bind-key -r C-h swap-window -t -1\; select-window -t -1
