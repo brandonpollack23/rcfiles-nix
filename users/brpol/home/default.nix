@@ -25,7 +25,10 @@ in {
   ];
 
   home.username = "brpol";
-  home.homeDirectory = "/home/brpol";
+  home.homeDirectory =
+    if pkgs.stdenv.isDarwin
+    then "/Users/brpol"
+    else "/home/brpol";
 
   # Passed in from mkHost via home-manager.extraSpecialArgs — single source of truth.
   home.stateVersion = stateVersion;

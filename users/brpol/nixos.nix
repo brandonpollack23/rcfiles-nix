@@ -18,4 +18,13 @@
 #     serviceConfig.ExecStart = "${pkgs.my-tool}/bin/my-tool";
 #   };
 # }
-{...}: {}
+{...}: {
+  # Linux account semantics: isNormalUser gives brpol a normal UID and the
+  # standard /home/brpol home directory; extraGroups grants the NixOS-only
+  # group memberships. None of these options exist on Darwin.
+  users.users."brpol" = {
+    isNormalUser = true;
+    home = "/home/brpol";
+    extraGroups = ["networkmanager" "wheel"];
+  };
+}

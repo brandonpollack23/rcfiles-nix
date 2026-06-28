@@ -14,4 +14,11 @@
 #     serviceConfig.RunAtLoad = true;
 #   };
 # }
-{}
+{...}: {
+  # macOS account fields. nix-darwin has no isNormalUser/extraGroups; the home
+  # directory lives under /Users. uid/gid would also be set here for a real
+  # Darwin deployment.
+  users.users."brpol" = {
+    home = "/Users/brpol";
+  };
+}
