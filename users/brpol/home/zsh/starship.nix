@@ -28,6 +28,7 @@ in {
         ''''${custom.git_status}''
         ''''${custom.jj}''
         ''$line_break''
+        ''''${env_var.STARSHIP_HISTCMD}''
         ''$character''
       ];
 
@@ -106,6 +107,13 @@ in {
         ignore_timeout = true;
         shell = [starship-jj "--ignore-working-copy" "starship"];
         use_stdin = false;
+      };
+
+      # History event number. zsh's $HISTCMD can't be read by starship directly
+      # (and %! is escaped in starship's output), so a precmd hook copies it into
+      # STARSHIP_HISTCMD for this env_var module to print.
+      env_var.STARSHIP_HISTCMD = {
+        format = "[$env_value ](bold green)";
       };
 
       status = {

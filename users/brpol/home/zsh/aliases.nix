@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  ...
 }: {
   programs.zsh = {
     # Global aliases (alias -g). HM emits these at mkOrder 1100, after OMZ (800),

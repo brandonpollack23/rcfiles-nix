@@ -125,6 +125,13 @@
         bindkey -M vicmd 'k' history-substring-search-up
         bindkey -M vicmd 'j' history-substring-search-down
 
+        # ── History number for the prompt ─────────────────────────────────────
+        # Starship can't read zsh's special $HISTCMD directly, so copy it into a
+        # plain env var each prompt for starship's env_var module to display.
+        autoload -Uz add-zsh-hook
+        _starship_export_histcmd() { export STARSHIP_HISTCMD=$HISTCMD; }
+        add-zsh-hook precmd _starship_export_histcmd
+
         # zoxide/fzf/mise are wired by their native HM modules; jj completion is
         # managed by OMZ's jj plugin.
 
