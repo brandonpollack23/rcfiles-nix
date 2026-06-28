@@ -13,13 +13,9 @@
     path = "${config.xdg.configHome}/git/git-identity.gitconfig";
   };
 
-  programs.delta = {
+  programs.difftastic = {
     enable = true;
-    enableGitIntegration = true;
-    options = {
-      navigate = true;
-      light = false;
-    };
+    git.enable = true;
   };
 
   programs.git = {

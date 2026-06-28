@@ -1,8 +1,18 @@
 {
-  lib,
   config,
+  pkgs,
   ...
 }: {
+  # jj's `mr` alias runs `jj util exec -- jj-vine`, so jj-vine must be on PATH.
+  home.packages = [pkgs.jj-vine];
+
+  # difftastic's jujutsu integration sets ui.diff-formatter to difft for us.
+  programs.difftastic = {
+    enable = true;
+    jujutsu.enable = true;
+    git.enable = true;
+  };
+
   # jj auto-merges every file under jj/conf.d into the top-level config, so render
   # the sops template straight into conf.d/identity.toml at its final path — no
   # custom symlink activation needed.
@@ -21,9 +31,9 @@
       user.name = "Brandon Pollack";
       # Email comes from the sops-rendered conf.d fragment via home.activation.jj-email-link.
 
+      # ui.diff-formatter is set by programs.difftastic.jujutsu above.
       ui = {
         merge-editor = "diffconflicts";
-        diff-formatter = ["difft" "--color=always" "$left" "$right"];
       };
 
       merge-tools = {
