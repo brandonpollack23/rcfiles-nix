@@ -48,7 +48,10 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    defaultKeymap = "viins";
+    # Vi mode is owned by the zsh-vi-mode plugin (jeffreytse/zsh-vi-mode),
+    # configured in the plugins list + initContent below. It supersedes
+    # programs.zsh.defaultKeymap, which only emits an early `bindkey -v` that the
+    # oh-my-zsh/plugin chain clobbered back to emacs.
 
     historySubstringSearch = {
       enable = true;
@@ -88,6 +91,13 @@
         src = pkgs.zsh-you-should-use;
         file = "share/zsh/plugins/you-should-use/you-should-use.plugin.zsh";
       }
+      # Listed last (sourced at mkOrder 900) so ZVM initializes after oh-my-zsh's
+      # `bindkey -e` (mkOrder 800) and before starship's hooks (mkOrder 1000).
+      {
+        name = "zsh-vi-mode";
+        src = pkgs.zsh-vi-mode;
+        file = "share/zsh-vi-mode/zsh-vi-mode.plugin.zsh";
+      }
     ];
 
     initContent = lib.mkMerge [
@@ -113,17 +123,13 @@
         zstyle ':fzf-tab:*' use-fzf-default-opts yes
         # switch group using `<` and `>`
         zstyle ':fzf-tab:*' switch-group '<' '>'
-        # use tmux popup for fzf
+        # render fzf in a tmux popup (autoloaded from fzf-tab's lib; needs tmux 3.2+,
+        # falls back to plain fzf outside tmux)
         zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
-
-        # ── Vi mode ───────────────────────────────────────────────────────────
-        # Base keymap is set via programs.zsh.defaultKeymap = "viins".
-        bindkey -M viins 'jk' vi-cmd-mode
-
-        # ^p/^n are bound by historySubstringSearch.search{Up,Down}Key; add the
-        # vi-cmd k/j bindings the option can't express.
-        bindkey -M vicmd 'k' history-substring-search-up
-        bindkey -M vicmd 'j' history-substring-search-down
+        # popup sizing: never smaller than 50x8; leave horizontal padding so the
+        # popup floats rather than filling the pane
+        zstyle ':fzf-tab:*' popup-min-size 50 8
+        zstyle ':fzf-tab:*' popup-pad 30 0
 
         # ── History number for the prompt ─────────────────────────────────────
         # Starship can't read zsh's special $HISTCMD directly, so copy it into a
@@ -145,6 +151,44 @@
         # Machine-specific shell config belongs in a host override under
         # hosts/<host>/home-overrides/brpol/, not an untracked ~/.zshrc.local.
       ''
+
+      # ── Vi mode (zsh-vi-mode) ─────────────────────────────────────────────────
+      # ZVM config must be set before the plugin is sourced (plugins list, mkOrder
+      # 900); this block is mkBefore (mkOrder 500). The plugin itself is loaded
+      # from the plugins list above — see that entry for the ordering rationale.
+      (lib.mkBefore ''
+        ZVM_INIT_MODE=sourcing
+        # jk leaves insert mode instead of the default Esc.
+        ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
+        # Seconds to wait for the rest of a multi-key sequence like jk.
+        ZVM_KEYTIMEOUT=0.2
+
+        # ZVM resets the keymaps on init, dropping bindings from fzf, fzf-tab and
+        # history-substring-search and stripping readline editing keys from insert
+        # mode. Re-apply them in this hook, which ZVM runs once init completes.
+        # (bindkey may name a widget defined by a later-sourced plugin; zsh
+        # resolves the widget at keypress time, so the ordering is fine.)
+        function zvm_after_init() {
+          # Keep common readline editing keys usable in vi insert mode.
+          bindkey -M viins '^A' beginning-of-line
+          bindkey -M viins '^E' end-of-line
+          bindkey -M viins '^U' backward-kill-line
+          bindkey -M viins '^K' kill-line
+          bindkey -M viins '^W' backward-kill-word
+          bindkey -M viins '^Y' yank
+
+          # History substring search: ^p/^n in insert, j/k in command mode.
+          bindkey -M viins '^P' history-substring-search-up
+          bindkey -M viins '^N' history-substring-search-down
+          bindkey -M vicmd 'k' history-substring-search-up
+          bindkey -M vicmd 'j' history-substring-search-down
+
+          # fzf widgets and fzf-tab completion.
+          bindkey -M viins '^R' fzf-history-widget
+          bindkey -M viins '^T' fzf-file-widget
+          bindkey -M viins '^I' fzf-tab-complete
+        }
+      '')
     ];
   };
 }
