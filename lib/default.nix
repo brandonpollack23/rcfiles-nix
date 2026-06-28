@@ -1,4 +1,5 @@
-# To add a new host/machine, add an entry to hostConfigs in flake.nix — the key becomes hostname.
+# To add a new host/machine, create hosts/<name>/{meta,default,hardware-configuration}.nix.
+# flake.nix auto-discovers every hosts/<name>/ that contains a meta.nix — no manual list.
 {
   nixpkgs,
   home-manager,

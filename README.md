@@ -9,7 +9,7 @@ Welp.
 ## Architecture
 
 - `lib/default.nix` — `mkHost` function; the single entry point for all host definitions
-- `flake.nix` — calls `mkHost` per host; SSH keys and per-host flags live here
+- `flake.nix` — auto-discovers every `hosts/<name>/` that has a `meta.nix` and calls `mkHost` for it; per-host flags and SSH keys live in that `meta.nix`, not here
 - `modules/common.nix` — baseline for every host: packages, nix settings, SSH, sops secrets
 - `modules/nixos.nix` — NixOS-only shared policy (store cleanup via `programs.nh`)
 - `modules/darwin.nix` — Darwin-only shared policy (placeholder)
@@ -62,7 +62,8 @@ isn't known until after it has booted. The flow is:
 # 1. After first boot, register this machine and re-encrypt secrets:
 update-secret-keys   # converts SSH host key via ssh-to-age, adds to .sops.yaml, re-encrypts
 
-# 2. Commit the updated .sops.yaml, add the host to flake.nix, and deploy:
+# 2. Commit the updated .sops.yaml (the host directory is discovered
+#    automatically from its meta.nix — no flake.nix edit needed), then deploy:
 nrs
 ```
 
