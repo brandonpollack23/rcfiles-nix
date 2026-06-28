@@ -44,8 +44,7 @@
       ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
       starship # cross-shell prompt
       stdenv.cc # c compiler
-      timew-sync-client
-      timewarrior # time tracker
+      # timewarrior + timew-sync-client are owned by users/brpol/home/timewarrior.nix
       tmux
       tree
       wget
