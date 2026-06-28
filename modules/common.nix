@@ -23,6 +23,7 @@
       bitwarden-cli
       cachix # nix caching system
       chafa # image-to-terminal renderer (used by cati alias)
+      cmake
       curl
       difftastic # structural diff tool (used by jj)
       eza # modern ls replacement
@@ -31,6 +32,7 @@
       fzf
       gh # UI to a bad forge
       git
+      gnumake # make, need this sometimes
       htop
       jj # version control of the modern times, reminds me of fig
       jq # json query language and formatter
@@ -41,6 +43,7 @@
       sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
       ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
       starship # cross-shell prompt
+      stdenv.cc # c compiler
       timew-sync-client
       timewarrior # time tracker
       tmux
