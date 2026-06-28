@@ -67,7 +67,7 @@ in {
       ${
       if rcfilesSrc != null
       then ''
-        ${seed-rcfiles-from-nix-store}/bin/seed-rcfiles-from-nix-store "$_flake_path" "${rcfilesSrc}"
+        ${lib.getExe seed-rcfiles-from-nix-store} "$_flake_path" "${rcfilesSrc}"
         if ${pkgs.git}/bin/git -C "$_flake_path" fetch origin 2>/dev/null; then
           ${
           if rcfilesRev != null

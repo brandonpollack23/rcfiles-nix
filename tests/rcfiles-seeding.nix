@@ -19,7 +19,7 @@ in
     mkdir -p "$HOME"
 
     # ── Test 1: fresh destination is seeded from fakeSrc ─────────────────────
-    ${seedScript}/bin/seed-rcfiles-from-nix-store "$HOME/rcfiles-nix" "${fakeSrc}"
+    ${pkgs.lib.getExe seedScript} "$HOME/rcfiles-nix" "${fakeSrc}"
 
     test -f "$HOME/rcfiles-nix/flake.nix" \
       || { echo "FAIL: flake.nix not copied"; exit 1; }
@@ -32,7 +32,7 @@ in
 
     # ── Test 2: idempotent — existing .git skips re-seeding ──────────────────
     echo "local-edit" > "$HOME/rcfiles-nix/flake.nix"
-    ${seedScript}/bin/seed-rcfiles-from-nix-store "$HOME/rcfiles-nix" "${fakeSrc}"
+    ${pkgs.lib.getExe seedScript} "$HOME/rcfiles-nix" "${fakeSrc}"
     grep -q "local-edit" "$HOME/rcfiles-nix/flake.nix" \
       || { echo "FAIL: existing repo was overwritten by re-seed"; exit 1; }
 

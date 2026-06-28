@@ -20,7 +20,7 @@ in {
 
   home.file.".cargo/config.toml".text = ''
     [registry]
-    credential-provider = ["cargo:token-from-stdout", "${cargoTokenProvider}/bin/cargo-token-from-sops"]
+    credential-provider = ["cargo:token-from-stdout", "${lib.getExe cargoTokenProvider}"]
 
     # For a named registry, add its index and token-specific provider like this:
     # [registries.example]

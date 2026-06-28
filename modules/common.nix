@@ -2,6 +2,7 @@
 # Put things here if they should be true on every machine you own.
 {
   pkgs,
+  lib,
   config,
   neovimPkg,
   ...
@@ -61,7 +62,9 @@
   '';
 
   environment.variables.EDITOR = "nvim";
-  environment.shellAliases.nrs = "${config.rcfiles_nix.rebuild.script}";
+  # rebuild.script is a writeShellApplication (a directory); point the alias at
+  # its executable via getExe.
+  environment.shellAliases.nrs = lib.getExe config.rcfiles_nix.rebuild.script;
 
   # zsh.enable makes zsh available as a login shell system-wide; individual
   # users opt in by setting shell = pkgs.zsh (or bashInteractive) in their nixos.nix.
