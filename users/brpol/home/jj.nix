@@ -3,19 +3,16 @@
   config,
   ...
 }: {
+  # jj auto-merges every file under jj/conf.d into the top-level config, so render
+  # the sops template straight into conf.d/identity.toml at its final path — no
+  # custom symlink activation needed.
   sops.templates."jj-identity.toml" = {
     content = ''
       [user]
       email = "${config.sops.placeholder."brpol/git-email"}"
     '';
+    path = "${config.xdg.configHome}/jj/conf.d/identity.toml";
   };
-
-  # the config dir jj/conf.d is auto merged with the top level config, use it for our secrets
-  home.activation.jj-email-link = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    mkdir -p "${config.xdg.configHome}/jj/conf.d"
-    ln -sf "${config.sops.templates."jj-identity.toml".path}" \
-      "${config.xdg.configHome}/jj/conf.d/identity.toml"
-  '';
 
   programs.jujutsu = {
     enable = true;

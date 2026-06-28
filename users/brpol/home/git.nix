@@ -1,10 +1,16 @@
-{config, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   sops.secrets."brpol/git-email" = {};
   sops.templates."git-identity.gitconfig" = {
-    content = ''
-      [user]
-          email = ${config.sops.placeholder."brpol/git-email"}
-    '';
+    # Serialize with toGitINI rather than hand-formatting the INI text.
+    content = lib.generators.toGitINI {
+      user.email = config.sops.placeholder."brpol/git-email";
+    };
+    # Render to an explicit final path under ~/.config/git, included below.
+    path = "${config.xdg.configHome}/git/git-identity.gitconfig";
   };
 
   programs.delta = {
@@ -38,19 +44,14 @@
       submodule.recurse = true;
       color.ui = "auto";
       diff.colorMoved = "default";
-      fetch.prune = false;
+      fetch.prune = true;
 
       merge.tool = "nvimdiffview";
       "mergetool \"nvimdiffview\"" = {
         cmd = "nvim -c 'DiffviewOpen'";
-        trustExitCode = true;
-      };
-
-      "filter \"lfs\"" = {
-        clean = "git-lfs clean -- %f";
-        smudge = "git-lfs smudge -- %f";
-        process = "git-lfs filter-process";
-        required = true;
+        # Diffview can't reliably signal merge success via exit code, so don't
+        # trust it — git prompts to confirm the merge was resolved instead.
+        trustExitCode = false;
       };
     };
   };
