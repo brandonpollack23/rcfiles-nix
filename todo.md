@@ -22,6 +22,7 @@
 
 - stargazer
   - obliderate brew and move the nix
+  - setup steam on darwin (not in programs.steam for nix darwin)
   - gotta go through tons of settings
 
 - ncc 1701e config (steam, etc)

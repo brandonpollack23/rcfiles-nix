@@ -35,100 +35,127 @@ in
     hostUserKeys ? {}, # registry passed in from flake.nix: hostname -> pubkey or null
   }: let
     allowedKeys = resolveHostKeys {inherit hostname allowedSSHHosts hostUserKeys;};
-    finalRootKeys = rootAuthorizedKeys ++ allowedKeys;
+    # Dedupe so a key granted both as an explicit escape-hatch key and via the
+    # allow-list isn't written twice into authorized_keys.
+    finalRootKeys = lib.unique (rootAuthorizedKeys ++ allowedKeys);
     # Give every user on this host the same set of allow-list keys. (for now, this can be modified to use the param)
     allowedKeysByUser = lib.genAttrs users (_: allowedKeys);
     # Merge the escape-hatch per-user keys with the allow-list keys, concatenating
-    # the two lists when the same username appears in both attrsets.
-    mergedUserKeys = lib.zipAttrsWith (_: lib.concatLists) [
-      userAuthorizedKeys
-      allowedKeysByUser
-    ];
+    # the two lists when the same username appears in both attrsets, then deduping.
+    mergedUserKeys =
+      lib.mapAttrs (_: lib.unique)
+      (lib.zipAttrsWith (_: lib.concatLists) [
+        userAuthorizedKeys
+        allowedKeysByUser
+      ]);
+
+    # Usernames referenced in userAuthorizedKeys that aren't actually deployed on
+    # this host — almost always a typo that would silently grant no access.
+    unknownKeyUsers = lib.subtractLists users (lib.attrNames userAuthorizedKeys);
 
     nixSystem =
       if isDarwin
       then darwin.lib.darwinSystem
       else lib.nixosSystem;
-    home-manager-module =
+
+    # Infrastructure modules that differ by platform. Grouped in one place so the
+    # NixOS/Darwin split lives in a single conditional rather than being scattered.
+    platformModules =
       if isDarwin
-      then home-manager.darwinModules.home-manager
-      else home-manager.nixosModules.home-manager;
-  in
-    nixSystem {
-      specialArgs = {
-        inherit hostname stateVersion isDarwin enableSteam;
-        rootAuthorizedKeys = finalRootKeys;
-        neovimPkg = neovim.packages;
+      then {
+        determinate = determinate.darwinModules.default;
+        sops = sops-nix.darwinModules.sops;
+        homeManager = home-manager.darwinModules.home-manager;
+      }
+      else {
+        determinate = determinate.nixosModules.default;
+        sops = sops-nix.nixosModules.sops;
+        homeManager = home-manager.nixosModules.home-manager;
       };
-      modules =
-        # Infrastructure and shared policy.
-        [
-          # Opinionated nix daemon settings from Determinate Systems.
-          determinate.nixosModules.default
+  in
+    assert lib.assertMsg (users != [])
+    "mkHost (${hostname}): `users` must be non-empty — every host needs at least one account.";
+    assert lib.assertMsg (!isDarwin || darwin != null)
+    "mkHost (${hostname}): isDarwin = true requires a real `darwin` flake input, but none is wired in.";
+    assert lib.assertMsg (unknownKeyUsers == [])
+    "mkHost (${hostname}): userAuthorizedKeys references users not in `users` (${lib.concatStringsSep ", " unknownKeyUsers}); known users: ${lib.concatStringsSep ", " users}.";
+      nixSystem {
+        specialArgs = {
+          inherit hostname stateVersion isDarwin enableSteam;
+          rootAuthorizedKeys = finalRootKeys;
+          neovimPkg = neovim.packages;
+        };
+        modules =
+          # Infrastructure and shared policy.
+          [
+            # Opinionated nix daemon settings from Determinate Systems.
+            platformModules.determinate
 
-          sops-nix.nixosModules.sops
+            platformModules.sops
 
-          # Host-specific config: bootloader, hostname, timezone, stateVersion, hardware.
-          ../hosts/${hostname}
+            # Host-specific config: bootloader, hostname, timezone, stateVersion, hardware.
+            ../hosts/${hostname}
 
-          # Shared baseline: nix settings, locale, base packages, root ssh, zsh, root key.
-          ../modules/common.nix
+            # Shared baseline: nix settings, locale, base packages, root ssh, zsh, root key.
+            ../modules/common.nix
 
-          # Automatic nightly pull and platform-specific rebuild. Disable per-host
-          # with rcfiles_nix.autoUpgrade.enable = false.
-          ../modules/auto-upgrade.nix
+            # Automatic nightly pull and platform-specific rebuild. Disable per-host
+            # with rcfiles_nix.autoUpgrade.enable = false.
+            ../modules/auto-upgrade.nix
 
-          # nrs alias wrapping the platform rebuild command. Disable per-host
-          # with rcfiles_nix.rebuild.enable = false.
-          ../modules/rebuild.nix
-        ]
-        # User layer — two separate systems that both iterate over `users`, but
-        # operate in different module systems and own different concerns.
-        #
-        # 1. System modules (NixOS module system): define WHO the user IS —
-        #    account, shell, group membership, uid. These set users.users.<name>
-        #    options and must exist at the OS level.
-        ++ builtins.concatMap (userModules {inherit isDarwin;}) users
-        # 2. Home Manager (HM subsystem): defines WHAT the user's environment
-        #    LOOKS LIKE — dotfiles, user packages, ~/.config. Evaluated by HM's
-        #    own module system inside the home-manager NixOS module, not by the
-        #    NixOS option evaluator directly.
-        ++ [
-          home-manager-module
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.sharedModules = [sops-nix.homeManagerModules.sops];
-            # stateVersion flows into every user's home config from the single mkHost param.
-            # rcfilesSrc/rcfilesRev seed ~/rcfiles-nix on first activation from the Nix closure.
-            home-manager.extraSpecialArgs = {
-              inherit stateVersion;
-              # Attrset of flake-pinned tmux plugin sources passed to users/brpol/home/tmux.nix.
-              # Add new plugins here and as flake inputs; flake.lock tracks the hashes.
-              tmuxExtraPlugins = {inherit tmux-menus tmux-easy-motion;};
-              rcfilesSrc = self.outPath;
-              rcfilesRev = self.rev or null;
-            };
-            # Each user gets their own users/<name>/home/ directory as their HM config,
-            # plus any per-host overrides under hosts/<hostname>/home-overrides/<user>/.
-            home-manager.users = lib.genAttrs users (user: {
-              imports =
-                [../users/${user}/home]
-                ++ hostHomeOverrides {inherit hostname user;};
-            });
-          }
+            # nrs alias wrapping the platform rebuild command. Disable per-host
+            # with rcfiles_nix.rebuild.enable = false.
+            ../modules/rebuild.nix
+          ]
+          # User layer — two separate systems that both iterate over `users`, but
+          # operate in different module systems and own different concerns.
+          #
+          # 1. System modules (NixOS module system): define WHO the user IS —
+          #    account, shell, group membership, uid. These set users.users.<name>
+          #    options and must exist at the OS level.
+          ++ builtins.concatMap (userModules {inherit isDarwin;}) users
+          # 2. Home Manager (HM subsystem): defines WHAT the user's environment
+          #    LOOKS LIKE — dotfiles, user packages, ~/.config. Evaluated by HM's
+          #    own module system inside the home-manager NixOS module, not by the
+          #    NixOS option evaluator directly.
+          ++ [
+            platformModules.homeManager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.sharedModules = [sops-nix.homeManagerModules.sops];
+              # stateVersion flows into every user's home config from the single mkHost param.
+              # rcfilesSrc/rcfilesRev seed ~/rcfiles-nix on first activation from the Nix closure.
+              home-manager.extraSpecialArgs = {
+                inherit stateVersion;
+                # Attrset of flake-pinned tmux plugin sources passed to users/brpol/home/tmux.nix.
+                # Add new plugins here and as flake inputs; flake.lock tracks the hashes.
+                tmuxExtraPlugins = {inherit tmux-menus tmux-easy-motion;};
+                rcfilesSrc = self.outPath;
+                rcfilesRev = self.rev or null;
+              };
+              # Each user gets their own users/<name>/home/ directory as their HM config,
+              # plus any per-host overrides under hosts/<hostname>/home-overrides/<user>/.
+              home-manager.users = lib.genAttrs users (user: {
+                imports =
+                  [../users/${user}/home]
+                  ++ hostHomeOverrides {inherit hostname user;};
+              });
+            }
 
-          # Per-user SSH authorized keys, injected here so user modules stay key-agnostic.
-          {
-            users.users =
-              lib.mapAttrs (_user: keys: {
-                openssh.authorizedKeys.keys = keys;
-              })
-              mergedUserKeys;
-          }
-        ]
-        ++ lib.optional isDarwin ../modules/darwin.nix
-        ++ lib.optional (!isDarwin) ../modules/nixos.nix
-        ++ lib.optional enableDesktop ../modules/desktop.nix
-        ++ lib.optional enableSteam ../modules/steam.nix;
-    }
+            # Per-user SSH authorized keys, injected here so user modules stay key-agnostic.
+            {
+              users.users =
+                lib.mapAttrs (_user: keys: {
+                  openssh.authorizedKeys.keys = keys;
+                })
+                mergedUserKeys;
+            }
+          ]
+          ++ lib.optional isDarwin ../modules/darwin.nix
+          ++ lib.optional (!isDarwin) ../modules/nixos.nix
+          # desktop.nix and steam.nix are NixOS-only modules (services.xserver,
+          # programs.steam); never import them on Darwin.
+          ++ lib.optional (enableDesktop && !isDarwin) ../modules/desktop.nix
+          ++ lib.optional (enableSteam && !isDarwin) ../modules/steam.nix;
+      }
