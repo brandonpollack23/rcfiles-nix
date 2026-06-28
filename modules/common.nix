@@ -48,8 +48,6 @@
       tmux
       tree
       wget
-      wl-clipboard # Wayland clipboard (wl-copy/wl-paste)
-      xclip # X11 clipboard (current Cinnamon session)
       zoxide # smarter cd
       zsh
     ]
