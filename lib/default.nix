@@ -4,7 +4,6 @@
   home-manager,
   determinate,
   neovim,
-  nixos-cli,
   sops-nix,
   tmux-menus,
   tmux-easy-motion,
@@ -17,6 +16,6 @@
   # through here.
   mkHost = import ./mk-host.nix {
     lib = nixpkgs.lib;
-    inherit home-manager determinate neovim nixos-cli sops-nix darwin self tmux-menus tmux-easy-motion;
+    inherit home-manager determinate neovim sops-nix darwin self tmux-menus tmux-easy-motion;
   };
 }

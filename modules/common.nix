@@ -4,7 +4,6 @@
   pkgs,
   config,
   neovimPkg,
-  nixosCliPkg,
   ...
 }: {
   imports = [
@@ -56,7 +55,6 @@
     ]
     ++ [
       neovimPkg.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
-      nixosCliPkg.${pkgs.stdenv.hostPlatform.system}.default # nixos CLI tool
     ];
 
   security.sudo.extraConfig = ''

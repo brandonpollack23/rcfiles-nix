@@ -20,25 +20,25 @@ this file, so keep all repository-wide agent instructions here.
 
 ## Repository architecture
 
-| Path | Responsibility |
-| --- | --- |
-| `flake.nix` | Flake inputs and automatic NixOS host discovery |
-| `flake.lock` | Exact input revisions; change only as part of an intentional input update |
-| `lib/default.nix` | `mkHost`, input/package wiring, shared module assembly, and platform selection |
-| `hosts/<name>/meta.nix` | Arguments passed to `mkHost`, such as `stateVersion`, users, SSH keys, and desktop support |
-| `hosts/<name>/default.nix` | Machine-specific boot, filesystems, networking identity, timezone, and hardware imports |
+| Path                                  | Responsibility                                                                                                             |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `flake.nix`                           | Flake inputs and automatic NixOS host discovery                                                                            |
+| `flake.lock`                          | Exact input revisions; change only as part of an intentional input update                                                  |
+| `lib/default.nix`                     | `mkHost`, input/package wiring, shared module assembly, and platform selection                                             |
+| `hosts/<name>/meta.nix`               | Arguments passed to `mkHost`, such as `stateVersion`, users, SSH keys, and desktop support                                 |
+| `hosts/<name>/default.nix`            | Machine-specific boot, filesystems, networking identity, timezone, and hardware imports                                    |
 | `hosts/<name>/home-overrides/<user>/` | Per-host Home Manager overrides for a user, auto-imported by name (e.g. `git.nix` layers onto `users/<user>/home/git.nix`) |
-| `modules/common.nix` | Baseline CLI packages and settings shared by every host |
-| `modules/common/` | Focused shared modules for Nix, secrets, locale, and SSH |
-| `modules/nixos.nix` | NixOS-only shared policy (e.g. `programs.nh` store cleanup) |
-| `modules/darwin.nix` | Darwin-only shared policy (currently empty placeholder) |
-| `modules/desktop.nix` | GUI packages and desktop services, gated by `enableDesktop` |
-| `modules/{auto-upgrade,rebuild}.nix` | Cross-platform dispatch to NixOS or Darwin implementations |
-| `old/` | Dormant code kept for reference; nothing here is imported |
-| `users/<name>/default.nix` | Cross-platform system-level user identity |
-| `users/<name>/{nixos,darwin}.nix` | Platform-specific system-level user configuration |
-| `users/<name>/home/` | Home Manager configuration, packages, dotfiles, and user scripts |
-| `.github/workflows/update-flake.yml` | Scheduled input update, flake check, per-host builds, and Cachix publication |
+| `modules/common.nix`                  | Baseline CLI packages and settings shared by every host                                                                    |
+| `modules/common/`                     | Focused shared modules for Nix, secrets, locale, and SSH                                                                   |
+| `modules/nixos.nix`                   | NixOS-only shared policy (e.g. `programs.nh` store cleanup)                                                                |
+| `modules/darwin.nix`                  | Darwin-only shared policy (currently empty placeholder)                                                                    |
+| `modules/desktop.nix`                 | GUI packages and desktop services, gated by `enableDesktop`                                                                |
+| `modules/{auto-upgrade,rebuild}.nix`  | Cross-platform dispatch to NixOS or Darwin implementations                                                                 |
+| `old/`                                | Dormant code kept for reference; nothing here is imported                                                                  |
+| `users/<name>/default.nix`            | Cross-platform system-level user identity                                                                                  |
+| `users/<name>/{nixos,darwin}.nix`     | Platform-specific system-level user configuration                                                                          |
+| `users/<name>/home/`                  | Home Manager configuration, packages, dotfiles, and user scripts                                                           |
+| `.github/workflows/update-flake.yml`  | Scheduled input update, flake check, per-host builds, and Cachix publication                                               |
 
 Every directory under `hosts/` containing `meta.nix` is automatically exposed as
 `nixosConfigurations.<directory-name>`. Do not add a manual host list to
@@ -153,8 +153,6 @@ CI cache configuration lives in `.github/workflows/update-flake.yml`.
 
 - `cache.nixos.org` is the standard NixOS cache.
 - `nix-community.cachix.org` is documented by the Neovim nightly input.
-- `watersucks.cachix.org` and its current public key are documented by
-  `nix-community/nixos-cli`.
 - `brandonpollack23.cachix.org` is this repository's read/write cache.
 
 For a new flake input:

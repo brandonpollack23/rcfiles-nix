@@ -3,7 +3,6 @@
   home-manager,
   determinate,
   neovim,
-  nixos-cli,
   sops-nix,
   tmux-menus,
   tmux-easy-motion,
@@ -60,7 +59,6 @@ in
         inherit hostname stateVersion isDarwin enableSteam;
         rootAuthorizedKeys = finalRootKeys;
         neovimPkg = neovim.packages;
-        nixosCliPkg = nixos-cli.packages;
       };
       modules =
         # Infrastructure and shared policy.
