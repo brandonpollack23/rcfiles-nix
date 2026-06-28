@@ -61,7 +61,7 @@
 
   update-secret-keys = pkgs.writeShellApplication {
     name = "update-secret-keys";
-    runtimeInputs = [ensure-age-key pkgs.sops pkgs.coreutils pkgs.ssh-to-age pkgs.gawk pkgs.gnugrep pkgs.yq-go];
+    runtimeInputs = [ensure-age-key pkgs.sops pkgs.coreutils pkgs.ssh-to-age pkgs.yq-go];
     runtimeEnv = checkoutEnv;
     text = builtins.readFile ./update-secret-keys.sh;
   };

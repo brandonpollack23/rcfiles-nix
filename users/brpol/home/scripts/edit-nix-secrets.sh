@@ -6,4 +6,6 @@ if [ "$#" -ne 0 ]; then
 fi
 
 ensure-age-key
-exec sops "$HOME/$RCFILES_CHECKOUT_DIR/secrets/secrets.yaml"
+# Pass the repo's .sops.yaml explicitly so this works regardless of $PWD.
+_repo="$HOME/$RCFILES_CHECKOUT_DIR"
+exec sops --config "$_repo/.sops.yaml" "$_repo/secrets/secrets.yaml"

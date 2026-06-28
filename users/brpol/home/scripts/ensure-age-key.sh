@@ -25,14 +25,22 @@ case "$STATUS" in
     _bw_opened=true
     ;;
 esac
-# Lock on exit only if we were the ones who opened the vault.
-trap '[ "$_bw_opened" = true ] && bw lock >/dev/null' EXIT
+# Lock on exit only if we were the ones who opened the vault; also clean up any
+# leftover temp key file.
+trap '[ "$_bw_opened" = true ] && bw lock >/dev/null; [ -n "${_tmp:-}" ] && rm -f "$_tmp"' EXIT
 KEY=$(bw get notes "age-private-key")
 if [ -z "$KEY" ]; then
   echo "error: Bitwarden note 'age-private-key' is empty or not found" >&2
   exit 1
 fi
 mkdir -p "$(dirname "$KEYS_FILE")"
-printf '%s\n' "$KEY" > "$KEYS_FILE"
-chmod 600 "$KEYS_FILE"
+# Write private key with a restrictive umask, into a temp file, then atomically
+# rename into place so the key is never momentarily world/group-readable and a
+# crash mid-write can't leave a partial keys.txt.
+umask 077
+_tmp=$(mktemp "$(dirname "$KEYS_FILE")/keys.txt.XXXXXX")
+printf '%s\n' "$KEY" > "$_tmp"
+chmod 600 "$_tmp"
+mv -f "$_tmp" "$KEYS_FILE"
+_tmp=""
 echo "Age key saved to $KEYS_FILE" >&2
