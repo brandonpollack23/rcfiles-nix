@@ -1,9 +1,3 @@
-- setup up applications which have module setup but only on some boxes optionally (modules?)
-  - zoom
-  - davinci resolve
-  - blender
-  - gimp
-
 - how to setup node/npm, uv, rust
 
 - how to set up packages that come from npm and update a lot
@@ -18,8 +12,9 @@
 
 - stargazer
   - obliderate brew and move the nix
-  - drive
   - setup steam on darwin (not in programs.steam for nix darwin)
+  - drive
+  - davinci resolve studio
   - gotta go through tons of settings
 
 - ncc 1701e config (steam, etc)

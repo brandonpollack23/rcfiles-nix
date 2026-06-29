@@ -27,6 +27,7 @@ in
     stateVersion, # e.g. "26.05" — single source of truth for system + home stateVersion
     isDarwin ? false, # true for Macintosh
     enableDesktop ? true, # include modules/desktop.nix (GUI stack, sound, printing)
+    extraApplications ? [], # optional packages from modules/extra-applications.nix
     enableSteam ? false, # whether or not to enable steam
     users ? ["brpol"], # list of usernames; each must have users/<name>/nixos.nix + home/
     rootAuthorizedKeys ? [], # SSH public keys granted access to root on this host (escape hatch)
@@ -87,7 +88,7 @@ in
     "mkHost (${hostname}): userAuthorizedKeys references users not in `users` (${lib.concatStringsSep ", " unknownKeyUsers}); known users: ${lib.concatStringsSep ", " users}.";
       nixSystem {
         specialArgs = {
-          inherit hostname stateVersion isDarwin enableSteam;
+          inherit hostname stateVersion isDarwin enableSteam extraApplications;
           rootAuthorizedKeys = finalRootKeys;
         };
         modules =
@@ -170,5 +171,6 @@ in
           # desktop.nix and steam.nix are NixOS-only modules (services.xserver,
           # programs.steam); never import them on Darwin.
           ++ lib.optional (enableDesktop && !isDarwin) ../modules/desktop.nix
+          ++ lib.optional (extraApplications != []) ../modules/extra-applications.nix
           ++ lib.optional (enableSteam && !isDarwin) ../modules/steam.nix;
       }

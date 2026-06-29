@@ -14,6 +14,9 @@ Welp.
 - `modules/nixos.nix` — NixOS-only shared policy (store cleanup via `programs.nh`)
 - `modules/darwin.nix` — Darwin-only shared policy (placeholder)
 - `modules/desktop.nix` — GUI stack, gated by `enableDesktop` in `mkHost`
+- `modules/extra-applications.nix` — optional packages selected with
+  `extraApplications` in each host's `meta.nix`; reusable selections such as
+  `defaultWorkstation` live in `lib/application-profiles.nix`
 - `hosts/<name>/` — host-specific hardware + bootloader config
 - `hosts/<name>/home-overrides/<user>/` — per-host home-manager tweaks for a user; each `.nix` file (e.g. `git.nix`) is auto-imported and merged onto the matching base module in `users/<user>/home/`
 - `users/<name>/` — system-level user config (`nixos.nix`) and home-manager config (`home/`)
@@ -21,6 +24,12 @@ Welp.
 
 Packages from flake inputs (neovim, nixos-cli) are resolved in `lib/default.nix` and passed
 via `specialArgs` — modules must not reach into `inputs` directly.
+
+Application profiles expose separate platform lists. NixOS hosts use
+`(import ../../lib/application-profiles.nix).defaultWorkstation`; a Darwin host
+uses `(import ../../lib/application-profiles.nix).defaultDarwinWorkstation`.
+The Darwin list omits DaVinci Resolve Studio because the locked nixpkgs package
+supports Linux only.
 
 ## Secrets (sops-nix)
 

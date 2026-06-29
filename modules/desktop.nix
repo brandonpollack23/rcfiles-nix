@@ -3,6 +3,7 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     ghostty
+    gimp
     google-chrome
     libnotify
     obsidian
