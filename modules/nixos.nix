@@ -1,6 +1,9 @@
 # NixOS-only configuration imported for every NixOS host via mkHost.
 # Mirror of modules/darwin.nix — put NixOS-specific shared policy here.
 {config, ...}: {
+  # rclone's user-level Google Drive mounts require this
+  programs.fuse.enable = true;
+
   # programs.nh owns store cleanup on NixOS; replaces the old nix.gc systemd
   # timer (see old/nix-gc-service.nix for the previous setup).
   programs.nh = {

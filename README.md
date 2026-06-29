@@ -83,3 +83,50 @@ age-keygen -y ~/.config/sops/age/keys.txt   # print public key → add to .sops.
 Store the `AGE-SECRET-KEY-1...` line from `keys.txt` as a **Bitwarden secure note named
 `age-private-key`**. This is what `ensure-age-key` fetches to restore the key file on a
 fresh machine.
+
+## Google Drive mounts
+
+Home Manager starts one login-scoped rclone service for each Google Drive account:
+`personal`, `tokyorust`, and `univalent`. They mount at
+`~/mnt/gdrive/<account>` on every NixOS host. Each mount uses write caching with
+a separate 10 GiB cache under `~/.cache/rclone/google-drive/<account>`.
+
+Add the credentials with `edit-nix-secrets`. Copy each value exactly from the
+corresponding working `rclone.conf` section; in particular, preserve rclone's
+possibly-obscured `client_secret` and copy the complete token JSON as one YAML
+string.
+
+```yaml
+brpol:
+  google-drive:
+    personal:
+      client_id: "..."
+      client_secret: "..."
+      token: >-
+        {"access_token":"...","token_type":"Bearer","refresh_token":"...","expiry":"..."}
+    tokyorust:
+      client_id: "..."
+      client_secret: "..."
+      token: >-
+        {"access_token":"...","token_type":"Bearer","refresh_token":"...","expiry":"..."}
+    univalent:
+      client_id: "..."
+      client_secret: "..."
+      token: >-
+        {"access_token":"...","token_type":"Bearer","refresh_token":"...","expiry":"..."}
+```
+
+The services are:
+
+```text
+rclone-google-drive-personal.service
+rclone-google-drive-tokyorust.service
+rclone-google-drive-univalent.service
+```
+
+Inspect an individual mount with:
+
+```bash
+systemctl --user status rclone-google-drive-personal.service
+findmnt "$HOME/mnt/gdrive/personal"
+```

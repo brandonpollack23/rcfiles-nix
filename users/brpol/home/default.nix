@@ -28,6 +28,7 @@ in {
   imports = [
     ./scripts
     ./secrets.nix
+    ./rclone.nix
     ./rust.nix
     ./git.nix
     ./jj.nix

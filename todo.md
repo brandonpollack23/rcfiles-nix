@@ -1,5 +1,4 @@
-- setup home
-  - google drive setup
+- ncc1701e need to pin the actual downloads folder and remove the other downloads
 
 - setup up applications which have module setup but only on some boxes optionally (modules?)
   - zoom
@@ -21,6 +20,7 @@
 
 - stargazer
   - obliderate brew and move the nix
+  - drive
   - setup steam on darwin (not in programs.steam for nix darwin)
   - gotta go through tons of settings
 

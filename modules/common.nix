@@ -40,6 +40,8 @@
       lolcat # rainbow text (welcome message)
       mise # polyglot runtime manager
       noti # xplatform notifications tool
+      nodejs # javascript on the server
+      rclone # mount google drive or other remote stores etc
       ripgrep
       sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
       ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
