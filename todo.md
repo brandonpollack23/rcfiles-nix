@@ -1,5 +1,4 @@
 - setup home
-  - setup desktop background revolving bing
   - google drive setup
 
 - setup up applications which have module setup but only on some boxes optionally (modules?)
