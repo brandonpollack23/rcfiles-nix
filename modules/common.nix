@@ -16,6 +16,7 @@
 
   # Base CLI tools available on every host. GUI apps belong in modules/desktop.nix.
   environment.systemPackages = with pkgs; [
+    _7zip-zstd # compress and uncompress
     alejandra # nix code formatter
     bat # cat with wings
     bitwarden-cli
@@ -42,8 +43,11 @@
     nixd # nix lsp (not in mason for nvim)
     noti # xplatform notifications tool
     nodejs # javascript on the server
+    python3
     rclone # mount google drive or other remote stores etc
     ripgrep # grep bug rip
+    rustup # rust setup
+    uv # python project management
     sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
     ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
     starship # cross-shell prompt
@@ -51,6 +55,7 @@
     tmux
     tree
     wget
+    zip # compress and decomrpess
     zoxide # smarter cd
     zsh
   ];

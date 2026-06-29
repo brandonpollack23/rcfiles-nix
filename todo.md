@@ -1,8 +1,3 @@
-- how to setup node/npm, uv, rust
-
-- how to set up packages that come from npm and update a lot
-  - claude/codex
-
 - nixos-anywhere for bootstrapping new systems
   - can it do hardware config?
   - can it run my brpol-setup script?
