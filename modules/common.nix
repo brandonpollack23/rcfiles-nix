@@ -54,6 +54,8 @@
     zsh
   ];
 
+  fonts.packages = [pkgs.nerd-fonts.jetbrains-mono];
+
   # Cache sudo credentials for 10 minutes.
   security.sudo.extraConfig = ''
     Defaults timestamp_timeout=10

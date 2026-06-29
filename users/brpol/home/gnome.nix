@@ -73,6 +73,7 @@ in {
   dconf.settings = {
     "org/gnome/shell" = {
       disable-user-extensions = false;
+      favorite-apps = [];
       enabled-extensions = [
         "tilingshell@ferrarodomenico.com"
         "dash-to-panel@jderose9.github.com"
@@ -163,30 +164,15 @@ in {
 
     "org/gnome/shell/extensions/dash-to-panel" = {
       appicon-margin = 1;
-      appicon-padding = 4;
-      appicon-style = "NORMAL";
-      dot-position = "BOTTOM";
-      dot-style-focused = "METRO";
-      dot-style-unfocused = "METRO";
       group-apps = false;
       group-apps-label-font-size = 13;
-      group-apps-label-font-weight = "inherit";
-      hotkeys-overlay-combo = "TEMPORARILY";
       isolate-monitors = true;
       isolate-workspaces = true;
-      # Monitor-keyed panel layout; non-matching monitors fall back to defaults.
-      panel-anchors = ''{"GSM-103NTJJKH252":"MIDDLE"}'';
-      panel-element-positions = ''{"GSM-103NTJJKH252":[{"element":"showAppsButton","visible":false,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"stackedTL"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
-      panel-lengths = "{}";
-      panel-positions = "{}";
-      panel-sizes = ''{"GSM-103NTJJKH252":28}'';
-      show-apps-icon-file = "";
-      stockgs-panelbtn-click-only = false;
+      panel-element-positions = ''{"0":[{"element":"showAppsButton","visible":false,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"stackedTL"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'';
+      panel-position = "BOTTOM";
+      panel-size = 28;
       trans-panel-opacity = 0.75;
-      trans-use-border = false;
-      trans-use-custom-bg = false;
       trans-use-custom-opacity = true;
-      window-preview-title-position = "TOP";
     };
 
     "org/gnome/shell/extensions/gsconnect" = {
