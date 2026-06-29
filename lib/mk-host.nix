@@ -135,6 +135,7 @@ in
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "home-manager-backup";
               home-manager.sharedModules = [sops-nix.homeManagerModules.sops];
               # stateVersion flows into every user's home config from the single mkHost param.
               # rcfilesSrc/rcfilesRev seed ~/rcfiles-nix on first activation from the Nix closure.
