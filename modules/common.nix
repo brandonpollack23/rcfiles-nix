@@ -21,7 +21,9 @@
     bitwarden-cli
     cachix # nix caching system
     chafa # image-to-terminal renderer (used by cati alias)
+    claude-code # anthropic ai coding agint
     cmake
+    codex # openai ai coding agent
     curl
     difftastic # structural diff tool (used by jj)
     eza # modern ls replacement

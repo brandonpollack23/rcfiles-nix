@@ -61,6 +61,15 @@ in {
     vitals # Vitals@CoreCoding.com
   ];
 
+  # Nautilus and GTK file choosers share this list of custom bookmarks.
+  xdg.configFile."gtk-4.0/bookmarks" = {
+    text = ''
+      file:///mnt/Memory_Alpha/Downloads
+      file:///home/brpol/mnt/gdrive
+    '';
+    force = true;
+  };
+
   dconf.settings = {
     "org/gnome/shell" = {
       disable-user-extensions = false;
