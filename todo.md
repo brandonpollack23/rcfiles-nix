@@ -1,5 +1,3 @@
-- ncc1701e need to pin the actual downloads folder and remove the other downloads
-
 - setup up applications which have module setup but only on some boxes optionally (modules?)
   - zoom
   - davinci resolve
