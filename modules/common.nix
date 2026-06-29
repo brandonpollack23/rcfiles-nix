@@ -24,11 +24,17 @@
     chafa # image-to-terminal renderer (used by cati alias)
     claude-code # anthropic ai coding agint
     cmake
+    csharpier # dotnet formatter
     codex # openai ai coding agent
     curl
     difftastic # structural diff tool (used by jj)
     dotnet-runtime_10 # java but microsofty
     eza # modern ls replacement
+    elixir
+    erlang
+    elixir-ls
+    fsautocomplete # fsharp language server
+    fantomas # f# formatter
     fastfetch
     fh # flakehub
     fzf
