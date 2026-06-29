@@ -27,6 +27,7 @@
     codex # openai ai coding agent
     curl
     difftastic # structural diff tool (used by jj)
+    dotnet-runtime_10 # java but microsofty
     eza # modern ls replacement
     fastfetch
     fh # flakehub
@@ -35,6 +36,7 @@
     git
     glow # markdown rendering in the cli
     gnumake # make, need this sometimes
+    go # googley c
     htop
     jj # version control of the modern times, reminds me of fig
     jq # json query language and formatter
@@ -47,6 +49,7 @@
     rclone # mount google drive or other remote stores etc
     ripgrep # grep bug rip
     rustup # rust setup
+    unzip # see zip
     uv # python project management
     sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
     ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
