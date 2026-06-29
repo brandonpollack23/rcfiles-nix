@@ -2,7 +2,7 @@
   lib,
   home-manager,
   determinate,
-  neovim,
+  packageFlakes,
   sops-nix,
   tmux-menus,
   tmux-easy-motion,
@@ -72,6 +72,12 @@ in
         sops = sops-nix.nixosModules.sops;
         homeManager = home-manager.nixosModules.home-manager;
       };
+
+    # Keep fast-moving packages and overlays together. Neovim exposes packages
+    # directly; Claude Code exposes an overlay.
+    flakeOverlays = [
+      packageFlakes.claude-code.overlays.default
+    ];
   in
     assert lib.assertMsg (users != [])
     "mkHost (${hostname}): `users` must be non-empty — every host needs at least one account.";
@@ -83,7 +89,6 @@ in
         specialArgs = {
           inherit hostname stateVersion isDarwin enableSteam;
           rootAuthorizedKeys = finalRootKeys;
-          neovimPkg = neovim.packages;
         };
         modules =
           # Infrastructure and shared policy.
@@ -93,16 +98,23 @@ in
 
             platformModules.sops
 
+            (
+              {pkgs, ...}: {
+                nixpkgs.overlays = flakeOverlays;
+                environment.systemPackages = [
+                  pkgs.codex
+                  pkgs.claude-code
+                  packageFlakes.neovim.packages.${pkgs.stdenv.hostPlatform.system}.default
+                ];
+              }
+            )
             # Host-specific config: bootloader, hostname, timezone, stateVersion, hardware.
             ../hosts/${hostname}
-
             # Shared baseline: nix settings, locale, base packages, root ssh, zsh, root key.
             ../modules/common.nix
-
             # Automatic nightly pull and platform-specific rebuild. Disable per-host
             # with rcfiles_nix.autoUpgrade.enable = false.
             ../modules/auto-upgrade.nix
-
             # nrs alias wrapping the platform rebuild command. Disable per-host
             # with rcfiles_nix.rebuild.enable = false.
             ../modules/rebuild.nix

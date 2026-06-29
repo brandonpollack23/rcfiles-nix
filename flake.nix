@@ -16,6 +16,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Fast-moving CLI packages sourced directly from their upstream flakes.
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     neovim.url = "github:nix-community/neovim-nightly-overlay";
 
     tmux-menus = {

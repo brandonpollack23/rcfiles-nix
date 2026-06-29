@@ -4,7 +4,6 @@
   pkgs,
   lib,
   config,
-  neovimPkg,
   ...
 }: {
   imports = [
@@ -16,46 +15,42 @@
   ];
 
   # Base CLI tools available on every host. GUI apps belong in modules/desktop.nix.
-  environment.systemPackages = with pkgs;
-    [
-      alejandra # nix code formatter
-      bat # cat with wings
-      bitwarden-cli
-      cachix # nix caching system
-      chafa # image-to-terminal renderer (used by cati alias)
-      cmake
-      curl
-      difftastic # structural diff tool (used by jj)
-      eza # modern ls replacement
-      fastfetch
-      fh # flakehub
-      fzf
-      gh # UI to a bad forge
-      git
-      glow # markdown rendering in the cli
-      gnumake # make, need this sometimes
-      htop
-      jj # version control of the modern times, reminds me of fig
-      jq # json query language and formatter
-      lolcat # rainbow text (welcome message)
-      mise # polyglot runtime manager
-      noti # xplatform notifications tool
-      nodejs # javascript on the server
-      rclone # mount google drive or other remote stores etc
-      ripgrep
-      sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
-      ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
-      starship # cross-shell prompt
-      stdenv.cc # c compiler
-      tmux
-      tree
-      wget
-      zoxide # smarter cd
-      zsh
-    ]
-    ++ [
-      neovimPkg.${pkgs.stdenv.hostPlatform.system}.default # nightly neovim
-    ];
+  environment.systemPackages = with pkgs; [
+    alejandra # nix code formatter
+    bat # cat with wings
+    bitwarden-cli
+    cachix # nix caching system
+    chafa # image-to-terminal renderer (used by cati alias)
+    cmake
+    curl
+    difftastic # structural diff tool (used by jj)
+    eza # modern ls replacement
+    fastfetch
+    fh # flakehub
+    fzf
+    gh # UI to a bad forge
+    git
+    glow # markdown rendering in the cli
+    gnumake # make, need this sometimes
+    htop
+    jj # version control of the modern times, reminds me of fig
+    jq # json query language and formatter
+    lolcat # rainbow text (welcome message)
+    mise # polyglot runtime manager
+    noti # xplatform notifications tool
+    nodejs # javascript on the server
+    rclone # mount google drive or other remote stores etc
+    ripgrep
+    sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
+    ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
+    starship # cross-shell prompt
+    stdenv.cc # c compiler
+    tmux
+    tree
+    wget
+    zoxide # smarter cd
+    zsh
+  ];
 
   # Cache sudo credentials for 10 minutes.
   security.sudo.extraConfig = ''
