@@ -168,8 +168,8 @@ in
                 mergedUserKeys;
             }
           ]
-          ++ lib.optionals isDarwin [platformModules.homebrew ../modules/darwin.nix]
-          ++ lib.optional (!isDarwin) ../modules/nixos.nix
+          ++ lib.optionals isDarwin [platformModules.homebrew ../modules/darwin]
+          ++ lib.optional (!isDarwin) ../modules/nixos
           # desktop.nix and steam.nix are NixOS-only modules (services.xserver,
           # programs.steam); never import them on Darwin.
           ++ lib.optional (enableDesktop && !isDarwin) ../modules/desktop.nix

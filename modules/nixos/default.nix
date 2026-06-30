@@ -1,6 +1,11 @@
 # NixOS-only configuration imported for every NixOS host via mkHost.
-# Mirror of modules/darwin.nix — put NixOS-specific shared policy here.
+# Mirror of modules/darwin — put NixOS-specific shared policy here.
 {config, ...}: {
+  imports = [
+    ./i18n.nix
+    ./ssh.nix
+  ];
+
   # rclone's user-level Google Drive mounts require this
   programs.fuse.enable = true;
 

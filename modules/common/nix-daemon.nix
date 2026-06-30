@@ -1,6 +1,8 @@
 {
   pkgs,
   config,
+  isDarwin,
+  lib,
   ...
 }: {
   nix = {
@@ -28,8 +30,9 @@
         exec ${pkgs.cachix}/bin/cachix push brandonpollack23 $OUT_PATHS
       '';
     };
-    optimise.automatic = true;
-    # gc is handled by nh
+    # Determinate manages store optimisation on Darwin; only enable on NixOS.
+    optimise.automatic = lib.mkIf (!isDarwin) true;
+    # gc is handled by nh (NixOS) or Determinate (Darwin)
   };
 
   nixpkgs.config.allowUnfree = true;
