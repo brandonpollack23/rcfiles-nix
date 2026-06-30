@@ -19,6 +19,9 @@
     _7zip-zstd # compress and uncompress
     alejandra # nix code formatter
     bat # cat with wings
+    beamPackages.elixir
+    beamPackages.erlang
+    beamPackages.elixir-ls
     bitwarden-cli
     cachix # nix caching system
     chafa # image-to-terminal renderer (used by cati alias)
@@ -30,9 +33,6 @@
     difftastic # structural diff tool (used by jj)
     dotnet-runtime_10 # java but microsofty
     eza # modern ls replacement
-    elixir
-    erlang
-    elixir-ls
     fsautocomplete # fsharp language server
     fantomas # f# formatter
     fastfetch

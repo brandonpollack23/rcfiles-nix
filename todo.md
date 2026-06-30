@@ -1,8 +1,3 @@
-- nixos-anywhere for bootstrapping new systems
-  - can it do hardware config?
-  - can it run my brpol-setup script?
-  - can it do darwin?
-
 - nvim lazyvim, how deep do i go?
 
 - stargazer
@@ -11,6 +6,11 @@
   - drive
   - davinci resolve studio
   - gotta go through tons of settings
+
+- nixos-anywhere for bootstrapping new systems
+  - can it do hardware config?
+  - can it run my brpol-setup script?
+  - can it do darwin?
 
 - ncc 1701e config (steam, etc)
 
