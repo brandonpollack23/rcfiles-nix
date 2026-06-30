@@ -6,7 +6,9 @@
     gimp
     google-chrome
     libnotify
+    discord
     obsidian
+    signal-desktop
     vscode
     wl-clipboard # Wayland clipboard (wl-copy/wl-paste)
     xclip # X11 clipboard; kept for X apps / switching back to an X session

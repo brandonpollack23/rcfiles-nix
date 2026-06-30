@@ -15,6 +15,7 @@
   environment.systemPackages = with pkgs; [
     _7zip-zstd # compress and uncompress
     alejandra # nix code formatter
+    asciinema # terminal session recorder
     bat # cat with wings
     beamPackages.elixir
     beamPackages.erlang
@@ -24,6 +25,7 @@
     chafa # image-to-terminal renderer (used by cati alias)
     claude-code # anthropic ai coding agint
     cmake
+    cowsay
     csharpier # dotnet formatter
     codex # openai ai coding agent
     curl
@@ -34,6 +36,8 @@
     fantomas # f# formatter
     fastfetch
     fh # flakehub
+    figlet # banner text generator
+    fortune # random fortune cookies
     fzf
     gh # UI to a bad forge
     git
@@ -45,13 +49,18 @@
     jq # json query language and formatter
     lolcat # rainbow text (welcome message)
     mise # polyglot runtime manager
+    ncdu # disk usage analyzer
     nixd # nix lsp (not in mason for nvim)
     noti # xplatform notifications tool
     nodejs # javascript on the server
+    presenterm # terminal presentations from markdown
     python3
     rclone # mount google drive or other remote stores etc
     ripgrep # grep bug rip
     rustup # rust setup
+    terraform # infra as code
+    timewarrior # time tracking
+    tokei # code statistics
     unzip # see zip
     uv # python project management
     sops # Secret operations.  Uses age keys to encrypt and decrypte files, opening them in default editor.
