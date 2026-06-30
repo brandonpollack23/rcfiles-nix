@@ -7,6 +7,7 @@
   tmux-menus,
   tmux-easy-motion,
   darwin ? null,
+  nix-homebrew ? null,
   self,
 }: let
   # Lib helpers imported directly; Nix is lazy so there's no need to thread these
@@ -67,6 +68,7 @@ in
         determinate = determinate.darwinModules.default;
         sops = sops-nix.darwinModules.sops;
         homeManager = home-manager.darwinModules.home-manager;
+        homebrew = nix-homebrew.darwinModules.nix-homebrew;
       }
       else {
         determinate = determinate.nixosModules.default;
@@ -166,7 +168,7 @@ in
                 mergedUserKeys;
             }
           ]
-          ++ lib.optional isDarwin ../modules/darwin.nix
+          ++ lib.optionals isDarwin [platformModules.homebrew ../modules/darwin.nix]
           ++ lib.optional (!isDarwin) ../modules/nixos.nix
           # desktop.nix and steam.nix are NixOS-only modules (services.xserver,
           # programs.steam); never import them on Darwin.

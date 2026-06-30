@@ -16,6 +16,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    darwin = {
+      url = "github:nix-darwin/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+
     # Fast-moving CLI packages sourced directly from their upstream flakes.
     claude-code = {
       url = "github:sadjow/claude-code-nix";
@@ -39,10 +46,15 @@
     myLib = import ./lib inputs;
 
     # Auto-discover hosts: every subdirectory of hosts/ that contains a meta.nix becomes a
-    # nixosConfiguration. Stubs without meta.nix are silently skipped.
+    # configuration. Stubs without meta.nix are silently skipped.
     # To add a host: create hosts/<name>/{default,hardware-configuration,meta}.nix.
     hostDirs = lib.filterAttrs (_: t: t == "directory") (builtins.readDir ./hosts);
     hostNames = lib.attrNames (lib.filterAttrs (name: _: (builtins.readDir ./hosts/${name}) ? "meta.nix") hostDirs);
+
+    # Read each host's meta.nix to determine platform, then partition.
+    hostMeta = lib.genAttrs hostNames (name: import ./hosts/${name}/meta.nix);
+    nixosHostNames = builtins.filter (name: !(hostMeta.${name}.isDarwin or false)) hostNames;
+    darwinHostNames = builtins.filter (name: (hostMeta.${name}.isDarwin or false)) hostNames;
 
     # Registry mapping hostname -> user SSH public key.  Hosts without a user.pub
     # file resolve to null; the allow-list resolver in mkHost filters those out.
@@ -52,10 +64,11 @@
       if builtins.pathExists f
       then lib.removeSuffix "\n" (builtins.readFile f)
       else null);
+
+    mkHostConfig = hostname: myLib.mkHost (import ./hosts/${hostname}/meta.nix // {inherit hostname hostUserKeys;});
   in {
-    nixosConfigurations =
-      lib.genAttrs hostNames
-      (hostname: myLib.mkHost (import ./hosts/${hostname}/meta.nix // {inherit hostname hostUserKeys;}));
+    nixosConfigurations = lib.genAttrs nixosHostNames mkHostConfig;
+    darwinConfigurations = lib.genAttrs darwinHostNames mkHostConfig;
 
     checks.x86_64-linux = {
       ssh-keyring = import ./tests/ssh-keyring.nix {

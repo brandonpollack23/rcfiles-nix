@@ -10,6 +10,7 @@
   tmux-menus,
   tmux-easy-motion,
   darwin ? null,
+  nix-homebrew ? null,
   self,
   ...
 }: let
@@ -22,6 +23,6 @@ in {
   # through here.
   mkHost = import ./mk-host.nix {
     lib = nixpkgs.lib;
-    inherit home-manager determinate packageFlakes sops-nix darwin self tmux-menus tmux-easy-motion;
+    inherit home-manager determinate packageFlakes sops-nix darwin nix-homebrew self tmux-menus tmux-easy-motion;
   };
 }
