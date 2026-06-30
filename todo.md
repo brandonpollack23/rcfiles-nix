@@ -1,7 +1,9 @@
 - stargazer
-  - obliderate brew and move the nix
+  - secrets initialization, does it work on mac?
+  - all packages which can be installed with nix instead of brew do.
+  - all packages which need brew/casks configure nix to do so
   - setup steam on darwin (not in programs.steam for nix darwin)
-  - drive
+  - google drive setup
   - davinci resolve studio
   - gotta go through tons of settings
 
