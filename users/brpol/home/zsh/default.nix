@@ -13,6 +13,7 @@
     # Completion library added to the user profile so its share/zsh/site-functions
     # lands in the HM-managed fpath (picked up at mkOrder 530 even without compinit).
     zsh-completions
+    lldb # DAP debugger for C/C++/Rust (nvim-dap); works on both Linux and Darwin
   ];
 
   home.sessionVariables = {

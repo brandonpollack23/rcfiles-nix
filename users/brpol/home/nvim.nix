@@ -7,8 +7,8 @@
   ...
 }: {
   # Runtime tools the custom Neovim config shells out to (DAP, formatters, …).
+  # lldb is in zsh/default.nix (shared across platforms).
   home.packages = [
-    pkgs.gdb # nvim-dap C/C++/Rust debugging
     pkgs.djlint # HTML/Django/Jinja template linter+formatter
   ];
 

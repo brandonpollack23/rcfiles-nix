@@ -39,7 +39,8 @@
   ...
 }: let
   gv = lib.hm.gvariant;
-in {
+in
+  lib.mkIf pkgs.stdenv.isLinux {
   home.packages = with pkgs.gnomeExtensions; [
     # Keyboard-driven window tiling with snap layouts and gaps.
     tiling-shell # tilingshell@ferrarodomenico.com
