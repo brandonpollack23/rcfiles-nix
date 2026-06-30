@@ -1,5 +1,3 @@
-- nvim lazyvim, how deep do i go?
-
 - stargazer
   - obliderate brew and move the nix
   - setup steam on darwin (not in programs.steam for nix darwin)
