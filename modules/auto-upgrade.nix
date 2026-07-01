@@ -36,5 +36,11 @@ in {
       default = rcfiles.repoUrl;
       description = "HTTPS remote pulled by the auto-upgrade service (no SSH key required).";
     };
+
+    remoteBranch = lib.mkOption {
+      type = lib.types.str;
+      default = "master";
+      description = "Remote branch name used as the rebase target (e.g. 'master' → 'master@origin').";
+    };
   };
 }

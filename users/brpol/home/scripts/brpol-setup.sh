@@ -28,7 +28,7 @@ ensure-gh-ssh-key
 echo "" >&2
 echo "--- Step 5: switch rcfiles-nix remote to SSH ---" >&2
 _flake_path="$HOME/$RCFILES_CHECKOUT_DIR"
-git -C "$_flake_path" remote set-url origin "$RCFILES_SSH_URL"
+jj -R "$_flake_path" git remote set-url origin "$RCFILES_SSH_URL"
 unset _flake_path
 
 echo "" >&2

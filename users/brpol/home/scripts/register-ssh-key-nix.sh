@@ -23,14 +23,18 @@ if [[ -f "$_pub_dst" ]] && diff -q "$_pub_src" "$_pub_dst" >/dev/null 2>&1; then
 fi
 
 cp "$_pub_src" "$_pub_dst"
-git -C "$_flake_path" add "hosts/$_host/user.pub"
 
-if git -C "$_flake_path" diff --cached --quiet; then
-  echo "Key already staged/committed for $_host, nothing to do." >&2
+# jj auto-tracks new/modified files; check if the working copy sees a diff.
+if [ -z "$(jj -R "$_flake_path" diff --summary -- "hosts/$_host/user.pub")" ]; then
+  echo "Key already committed for $_host, nothing to do." >&2
 else
-  git -C "$_flake_path" commit -m "feat: register SSH public key for $_host"
-  git -C "$_flake_path" pull --rebase
-  git -C "$_flake_path" push
+  jj -R "$_flake_path" commit -m "feat: register SSH public key for $_host"
+  # Advance the master bookmark to the new commit (@-) and push.
+  jj -R "$_flake_path" bookmark set master -r "@-"
+  jj -R "$_flake_path" git fetch
+  jj -R "$_flake_path" rebase -d "master@origin"
+  jj -R "$_flake_path" bookmark set master -r "@-"
+  jj -R "$_flake_path" git push --bookmark master
 fi
 
 unset _flake_path _host _pub_src _pub_dst

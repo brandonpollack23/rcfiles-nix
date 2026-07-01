@@ -12,6 +12,7 @@
   stateDir = lib.escapeShellArg cfg.stateDir;
   flakePath = lib.escapeShellArg cfg.flakePath;
   repoUrl = lib.escapeShellArg cfg.repoUrl;
+  rebaseTarget = lib.escapeShellArg "${cfg.remoteBranch}@origin";
 
   notifyScript = pkgs.writeShellScript "rcfiles-notify-upgrade-failure" ''
     f=${stateDir}/failure
@@ -23,7 +24,7 @@ in {
     launchd.daemons.rcfiles-auto-upgrade = {
       path = with pkgs; [
         nh
-        git
+        jujutsu
         nix
         coreutils
         gnutar
@@ -38,7 +39,7 @@ in {
         STATE_DIR=${stateDir}
         FAILURE_FILE="$STATE_DIR/failure"
         BRANDON_SYSTEM_FLAKE_DIR=${flakePath}
-        REPO_URL=${repoUrl}
+        REBASE_TARGET=${rebaseTarget}
 
         ${pkgs.coreutils}/bin/mkdir -p "$STATE_DIR"
 
@@ -46,32 +47,41 @@ in {
           ${pkgs.coreutils}/bin/printf '%s: %s\n' "$(${pkgs.coreutils}/bin/date -Iseconds)" "$1" > "$FAILURE_FILE"
         }
 
-        # All git operations run as brpol, the checkout's owner; only the rebuild
+        # All jj operations run as brpol, the checkout's owner; only the rebuild
         # needs root. /usr/bin/sudo is the setuid system sudo on macOS.
-        git_as_brpol() {
-          /usr/bin/sudo -u brpol -- ${pkgs.git}/bin/git -C "$BRANDON_SYSTEM_FLAKE_DIR" "$@"
+        jj_as_brpol() {
+          /usr/bin/sudo -u brpol -- ${pkgs.jujutsu}/bin/jj -R "$BRANDON_SYSTEM_FLAKE_DIR" "$@"
         }
 
-        if [ ! -d "$BRANDON_SYSTEM_FLAKE_DIR/.git" ]; then
-          record_failure "no git checkout at $BRANDON_SYSTEM_FLAKE_DIR; run brpol-setup / home activation first"
+        if [ ! -d "$BRANDON_SYSTEM_FLAKE_DIR/.jj" ]; then
+          if [ -d "$BRANDON_SYSTEM_FLAKE_DIR/.git" ]; then
+            # Upgrade a plain git checkout to a colocated jj repo in-place.
+            /usr/bin/sudo -u brpol -- ${pkgs.jujutsu}/bin/jj git init --colocate "$BRANDON_SYSTEM_FLAKE_DIR"
+          else
+            record_failure "no jj or git checkout at $BRANDON_SYSTEM_FLAKE_DIR; run brpol-setup / home activation first"
+            exit 1
+          fi
+        fi
+
+        # Fetch from origin. Origin must be configured as the HTTPS remote so no
+        # SSH key is required. (brpol-setup switches origin to SSH for interactive
+        # use; set it back to HTTPS here if the service fails with auth errors.)
+        if ! jj_as_brpol git fetch; then
+          record_failure "jj git fetch failed in $BRANDON_SYSTEM_FLAKE_DIR; check network and origin remote URL"
           exit 1
         fi
 
-        # Refuse to touch a dirty or untracked checkout — an auto-pull could
-        # clobber local work, and rebase refuses to run on a dirty tree anyway.
-        if [ -n "$(git_as_brpol status --porcelain)" ]; then
-          record_failure "checkout at $BRANDON_SYSTEM_FLAKE_DIR has uncommitted or untracked changes; resolve manually and retry"
+        # Rebase local commits on top of the fetched remote bookmark.
+        if ! jj_as_brpol rebase -d "$REBASE_TARGET"; then
+          record_failure "jj rebase onto $REBASE_TARGET failed in $BRANDON_SYSTEM_FLAKE_DIR; manually resolve and retry"
           exit 1
         fi
 
-        # Pull via HTTPS — no SSH key required; leaves the repo's configured
-        # remote unchanged so the user can still push via SSH. --rebase replays
-        # any local commits on top of upstream (never a merge commit); a real
-        # conflict aborts the rebase so the checkout is left clean rather than
-        # mid-rebase, and the failure is recorded for manual resolution.
-        if ! git_as_brpol pull --rebase "$REPO_URL"; then
-          git_as_brpol rebase --abort 2>/dev/null || true
-          record_failure "git pull --rebase failed (likely conflicts); manually resolve in $BRANDON_SYSTEM_FLAKE_DIR and try again"
+        # Fail if the rebase left any conflict markers rather than silently
+        # rebuilding a broken config.
+        if [ -n "$(jj_as_brpol log -r 'conflicts()' --no-graph -T 'commit_id')" ]; then
+          record_failure "jj rebase produced conflicts in $BRANDON_SYSTEM_FLAKE_DIR; run 'jj undo' then resolve manually and retry"
+          jj_as_brpol undo
           exit 1
         fi
 

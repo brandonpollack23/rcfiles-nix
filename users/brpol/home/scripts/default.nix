@@ -9,7 +9,7 @@
   brpol-setup = pkgs.writeShellApplication {
     name = "brpol-setup";
     runtimeInputs = [
-      pkgs.git
+      pkgs.jujutsu
       pkgs.coreutils
       ensure-age-key
       ensure-ssh-key
@@ -23,7 +23,7 @@
 
   register-ssh-key-nix = pkgs.writeShellApplication {
     name = "register-ssh-key-nix";
-    runtimeInputs = [pkgs.git pkgs.openssh pkgs.coreutils pkgs.diffutils ensure-ssh-key];
+    runtimeInputs = [pkgs.jujutsu pkgs.openssh pkgs.coreutils pkgs.diffutils ensure-ssh-key];
     runtimeEnv = checkoutEnv;
     text = builtins.readFile ./register-ssh-key-nix.sh;
   };

@@ -58,8 +58,8 @@ in {
 
   # Seed ~/rcfiles-nix on a fresh machine.
   # The working tree is baked into the Nix closure via inputs.self (rcfilesSrc), so no
-  # network access is needed for the files themselves. A git fetch is attempted afterward
-  # to populate full history; it is tolerated if the machine is offline at first boot.
+  # network access is needed for the files themselves. A jj git fetch is attempted
+  # afterward to populate full history; it is tolerated if offline at first boot.
   # brpol-setup switches the remote from HTTPS to SSH after credentials are available.
   home.activation.cloneRcfiles = lib.hm.dag.entryAfter ["writeBoundary"] ''
     _flake_path=''${NH_FLAKE:-$HOME/${rcfiles.checkoutDir}}
@@ -73,29 +73,29 @@ in {
         ;;
     esac
 
-    if [ ! -d "$_flake_path/.git" ]; then
+    if [ ! -d "$_flake_path/.jj" ]; then
       ${
       if rcfilesSrc != null
       then ''
         ${lib.getExe seed-rcfiles-from-nix-store} "$_flake_path" "${rcfilesSrc}"
-        if ${pkgs.git}/bin/git -C "$_flake_path" fetch origin 2>/dev/null; then
+        if ${lib.getExe pkgs.jujutsu} -R "$_flake_path" git fetch 2>/dev/null; then
           ${
           if rcfilesRev != null
-          then ''            ${pkgs.git}/bin/git -C "$_flake_path" reset --hard "${rcfilesRev}" 2>/dev/null \
-                              || ${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null \
+          then ''            ${lib.getExe pkgs.jujutsu} -R "$_flake_path" edit "${rcfilesRev}" 2>/dev/null \
+                              || ${lib.getExe pkgs.jujutsu} -R "$_flake_path" edit "master@origin" 2>/dev/null \
                               || true''
-          else ''${pkgs.git}/bin/git -C "$_flake_path" reset --hard origin/HEAD 2>/dev/null || true''
+          else ''${lib.getExe pkgs.jujutsu} -R "$_flake_path" edit "master@origin" 2>/dev/null || true''
         }
         else
           # Offline first activation: the seed left an initialized-but-historyless
-          # .git (git init + remote add, no fetched commits). Drop it — keeping the
-          # seeded working files — so a later online activation re-enters this block
-          # and retries the fetch instead of seeing .git and skipping forever.
-          ${pkgs.coreutils}/bin/rm -rf "$_flake_path/.git"
+          # jj repo. Drop both .jj and .git — keeping the seeded working files —
+          # so a later online activation re-enters this block and retries the fetch
+          # instead of seeing .jj and skipping forever.
+          ${pkgs.coreutils}/bin/rm -rf "$_flake_path/.jj" "$_flake_path/.git"
         fi
       ''
       else ''
-        ${pkgs.git}/bin/git clone \
+        ${lib.getExe pkgs.jujutsu} git clone \
           ${lib.escapeShellArg rcfiles.repoUrl} \
           "$_flake_path"
       ''
