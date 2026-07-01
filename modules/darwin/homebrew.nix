@@ -7,6 +7,7 @@
     enableRosetta = false; # M4 is native arm64; no Rosetta brew needed
     user = "brpol";
     mutableTaps = true;
+    autoMigrate = true;
   };
 
   homebrew = {
@@ -20,7 +21,6 @@
     casks =
       [
         "bitwarden"
-        "davinci-resolve-studio"
         "discord"
         "ghostty"
         "google-drive"
@@ -30,6 +30,7 @@
         "ngrok"
         "thaw" # menu bar manager (Ice fork)
         "visual-studio-code"
+        "whatsapp"
       ]
       ++ (
         if enableSteam
@@ -48,9 +49,5 @@
       "mlx" # apple ml framework (no nixpkgs package)
       "mlx-c" # c bindings for mlx
     ];
-    masApps = {
-      "WhatsApp" = 310633997;
-      "Xcode" = 497799835;
-    };
   };
 }

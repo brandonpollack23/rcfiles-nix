@@ -80,6 +80,8 @@ in
     # directly; Claude Code exposes an overlay.
     flakeOverlays = [
       packageFlakes.claude-code.overlays.default
+      # macOS sandbox strips setuid bits, causing a mise unit test to panic.
+      (final: prev: {mise = prev.mise.overrideAttrs (_: {doCheck = false;});})
     ];
   in
     assert lib.assertMsg (users != [])
