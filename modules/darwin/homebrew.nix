@@ -7,6 +7,7 @@
     enableRosetta = false; # M4 is native arm64; no Rosetta brew needed
     user = "brpol";
     mutableTaps = true;
+    autoMigrate = true;
   };
 
   homebrew = {
@@ -20,7 +21,6 @@
     casks =
       [
         "bitwarden"
-        "davinci-resolve-studio"
         "discord"
         "ghostty"
         "google-drive"
