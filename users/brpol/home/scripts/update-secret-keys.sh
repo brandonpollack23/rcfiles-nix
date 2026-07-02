@@ -6,12 +6,14 @@ if [ "$#" -ne 0 ]; then
   exit 2
 fi
 
+export SOPS_AGE_KEY_FILE="${SOPS_AGE_KEY_FILE:-$HOME/.config/sops/age/keys.txt}"
+
 _repo="$HOME/$RCFILES_CHECKOUT_DIR"
 SOPS_YAML="$_repo/.sops.yaml"
 ensure-age-key
 
 # The host *public* key is world-readable (mode 0644), so no sudo is needed.
-HOST_AGE_KEY=$(ssh-to-age < /etc/ssh/ssh_host_ed25519_key.pub)
+HOST_AGE_KEY=$(ssh-to-age </etc/ssh/ssh_host_ed25519_key.pub)
 export HOST_AGE_KEY
 HOST_NAME=$(uname -n)
 export HOST_NAME
