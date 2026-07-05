@@ -30,7 +30,7 @@
     codex # openai ai coding agent
     curl
     difftastic # structural diff tool (used by jj)
-    dotnet-runtime_10 # java but microsofty
+    dotnet-sdk_10 # SDK is required by Mason to install dotnet tools
     eza # modern ls replacement
     fsautocomplete # fsharp language server
     fantomas # f# formatter
