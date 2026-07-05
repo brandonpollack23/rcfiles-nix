@@ -57,29 +57,29 @@ jobs:
             echo "Flake inputs are already up to date"
           else
             changes=$(python3 <<'PYEOF'
-import json, subprocess
+          import json, subprocess
 
-old_raw = subprocess.run(['git', 'show', 'HEAD:flake.lock'],
-                         capture_output=True, text=True)
-old = json.loads(old_raw.stdout) if old_raw.returncode == 0 else {'nodes': {}}
+          old_raw = subprocess.run(['git', 'show', 'HEAD:flake.lock'],
+                                   capture_output=True, text=True)
+          old = json.loads(old_raw.stdout) if old_raw.returncode == 0 else {'nodes': {}}
 
-with open('flake.lock') as f:
-    new = json.load(f)
+          with open('flake.lock') as f:
+              new = json.load(f)
 
-lines = []
-for name in sorted(set(old['nodes']) | set(new['nodes'])):
-    old_rev = ((old['nodes'].get(name) or {}).get('locked') or {}).get('rev', '')
-    new_rev = ((new['nodes'].get(name) or {}).get('locked') or {}).get('rev', '')
-    if old_rev == new_rev:
-        continue
-    if old_rev and new_rev:
-        lines.append(f'  {name}: {old_rev[:7]}..{new_rev[:7]}')
-    elif new_rev:
-        lines.append(f'  {name}: added at {new_rev[:7]}')
-    elif old_rev:
-        lines.append(f'  {name}: removed (was {old_rev[:7]})')
-print('\n'.join(lines))
-PYEOF
+          lines = []
+          for name in sorted(set(old['nodes']) | set(new['nodes'])):
+              old_rev = ((old['nodes'].get(name) or {}).get('locked') or {}).get('rev', '')
+              new_rev = ((new['nodes'].get(name) or {}).get('locked') or {}).get('rev', '')
+              if old_rev == new_rev:
+                  continue
+              if old_rev and new_rev:
+                  lines.append(f'  {name}: {old_rev[:7]}..{new_rev[:7]}')
+              elif new_rev:
+                  lines.append(f'  {name}: added at {new_rev[:7]}')
+              elif old_rev:
+                  lines.append(f'  {name}: removed (was {old_rev[:7]})')
+          print('\n'.join(lines))
+          PYEOF
             )
             if [ -n "$changes" ]; then
               git commit -m "$(printf 'chore: update flake inputs\n\n%s' "$changes")"
