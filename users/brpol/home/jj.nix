@@ -33,10 +33,17 @@
 
       # ui.diff-formatter is set by programs.difftastic.jujutsu above.
       ui = {
-        merge-editor = "diffconflicts";
+        merge-editor = "diffview";
       };
 
       merge-tools = {
+        diffview = {
+          program = "nvim";
+          merge-args = ["-c" "DiffviewMergeFiles $output $base $left $right"];
+          merge-tool-edits-conflict-markers = true;
+          conflict-marker-style = "git";
+        };
+
         diffconflicts = {
           program = "nvim";
           merge-args = [

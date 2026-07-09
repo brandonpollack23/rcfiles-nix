@@ -40,6 +40,7 @@
       submodule.recurse = true;
       color.ui = "auto";
       diff.colorMoved = "default";
+      diff.algorithm = "histogram";
       fetch.prune = true;
 
       merge.tool = "nvimdiffview";

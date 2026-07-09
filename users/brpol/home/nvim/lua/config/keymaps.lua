@@ -24,6 +24,13 @@ end, { desc = "Toggle Theme (VSCode/Dayfox)" })
 
 vim.keymap.set("n", "<leader>bb", "<Cmd>BufferLinePick<CR>", { desc = "Buffer Pick" })
 
+-- Support copying filename
+vim.keymap.set("n", "<leader>%", function()
+  local filepath = vim.fn.expand("%")
+  vim.fn.setreg("+", filepath)
+  print("Copied: " .. filepath)
+end, { noremap = true, silent = true, desc = "Copy full path to clipboard" })
+
 -- better up/down
 -- map({ "n", "x" }, "j", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
 -- map({ "n", "x" }, "<Down>", "v:count == 0 ? 'gj' : 'j'", { desc = "Down", expr = true, silent = true })
