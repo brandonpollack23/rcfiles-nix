@@ -21,14 +21,19 @@ return {
   {
     "dlyongemallo/diffview-plus.nvim",
     version = "*",
-    -- optional: lazy-load on command
-    -- cmd = {
-    --     "DiffviewOpen",
-    --     "DiffviewToggle",
-    --     "DiffviewFileHistory",
-    --     "DiffviewDiffFiles",
-    --     "DiffviewLog",
-    -- },
+    cmd = {
+      "DiffviewClose",
+      "DiffviewDiffDirs",
+      "DiffviewDiffFiles",
+      "DiffviewFileHistory",
+      "DiffviewFocusFiles",
+      "DiffviewLog",
+      "DiffviewMergeFiles",
+      "DiffviewOpen",
+      "DiffviewRefresh",
+      "DiffviewToggle",
+      "DiffviewToggleFiles",
+    },
     -- diffchar.vim gives character-level diff precision, pairs with enhanced_diff_hl below
     dependencies = { "rickhowe/diffchar.vim" },
     opts = {
