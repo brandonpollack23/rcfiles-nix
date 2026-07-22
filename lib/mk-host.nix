@@ -80,8 +80,15 @@ in
     # directly; Claude Code exposes an overlay.
     flakeOverlays = [
       packageFlakes.claude-code.overlays.default
-      # macOS sandbox strips setuid bits, causing a mise unit test to panic.
-      (final: prev: {mise = prev.mise.overrideAttrs (_: {doCheck = false;});})
+      (final: prev: {
+        mise = prev.mise.overrideAttrs (old: {
+          # macOS sandbox strips setuid bits, causing a mise unit test to panic.
+          doCheck = false;
+          # libz-ng-sys's build.rs shells out to cmake during the normal build,
+          # but upstream only lists cmake under nativeCheckInputs.
+          nativeBuildInputs = old.nativeBuildInputs ++ [prev.cmake];
+        });
+      })
     ];
   in
     assert lib.assertMsg (users != [])
