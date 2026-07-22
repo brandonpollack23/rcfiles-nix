@@ -34,6 +34,12 @@
       # ui.diff-formatter is set by programs.difftastic.jujutsu above.
       ui = {
         merge-editor = "diffview";
+        movement.edit = true;
+      };
+
+      remotes = {
+        origin.auto-track-bookmarks = "main|master|brandon/*";
+        upstream.auto-track-bookmarks = "main|master";
       };
 
       merge-tools = {
