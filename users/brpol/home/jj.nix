@@ -87,7 +87,18 @@
         };
       };
 
-      aliases.mr = ["util" "exec" "--" "jj-vine"];
+      aliases = {
+        mr = ["util" "exec" "--" "jj-vine"];
+        # Tolerates either `main` or `master` as the base branch.
+        "stack-marks" = [
+          "log"
+          "-r"
+          ''bookmarks() & (bookmarks("main") | bookmarks("master"))..@''
+          "--no-graph"
+          "-T"
+          ''bookmarks.map(|b| b.name()).join("\n") ++ "\n"''
+        ];
+      };
     };
   };
 }
