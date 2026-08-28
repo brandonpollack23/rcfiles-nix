@@ -25,11 +25,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1787871908,
-        "narHash": "sha256-A181aTzJdtCQ1gTAxMF4Xl5sBNHY/2V4Xyq352ppkH4=",
+        "lastModified": 1787952139,
+        "narHash": "sha256-NVFDQ1zolO+1o3YfBuoldkYXyDQM80xGjMd1M6XSWT4=",
         "owner": "sadjow",
         "repo": "claude-code-nix",
-        "rev": "9b5840dab2d48147a01399938948ccfc68b99bd3",
+        "rev": "610372fec14515281ef2c4bb6f383fab7881e1ee",
         "type": "github"
       },
       "original": {
@@ -222,11 +222,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1787795708,
-        "narHash": "sha256-NvPFjEELb7aKvLSndc3QJwreCsQit246A8Z31SdmrTc=",
+        "lastModified": 1787876661,
+        "narHash": "sha256-Ggp83T12BJA1XBbJeSCFI1bnKLkSYWWmYqByhpeTfNM=",
         "owner": "nix-community",
         "repo": "neovim-nightly-overlay",
-        "rev": "727bf410a2fb0743e9a4624aa7dce02386828a72",
+        "rev": "476e5145565274b3aa6ecf3f7ab726fd8131e736",
         "type": "github"
       },
       "original": {
@@ -238,11 +238,11 @@
     "neovim-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1787788455,
-        "narHash": "sha256-dE/eKBquLBQwpG81dPDVjFJt/OubVtdNnAePnbVim1E=",
+        "lastModified": 1787861531,
+        "narHash": "sha256-Y8NLahyZQ5ulkKRakZrEiUIhFZNsSZnKNUJdsIz4bVQ=",
         "owner": "neovim",
         "repo": "neovim",
-        "rev": "6eb36bcb2de9cb066e8169daed053c77eb7667ed",
+        "rev": "7e2e3f8c255f7ae65bd9fdc3feba6b4efd21416f",
         "type": "github"
       },
       "original": {
@@ -352,11 +352,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1787631388,
-        "narHash": "sha256-vMiXptXarfSdJb1Gkc+FYVOAibuBRj7qxGa8z68q1Uw=",
+        "lastModified": 1787814960,
+        "narHash": "sha256-PYZq1qzCJXC2zGI0mH07vrZBsw6DRBAOX0jN1pPtqOQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "ac6b2166e7a9375683b8e98f860f273222337b16",
+        "rev": "c27cdad491a991b11ed731760aa2ef8db0cb0410",
         "type": "github"
       },
       "original": {
@@ -450,11 +450,11 @@
     "tmux-menus": {
       "flake": false,
       "locked": {
-        "lastModified": 1786519571,
-        "narHash": "sha256-nvN2GREVR2t+n0Q7dO1Pw98bCfyoYy86/KyoAsYxVWw=",
+        "lastModified": 1787928663,
+        "narHash": "sha256-Plnq+sftzsk3/CRGZlH3ZNJ49WHsJbVFSACYyJ8jQyo=",
         "owner": "jaclu",
         "repo": "tmux-menus",
-        "rev": "5e1b8a148bf609597d9e395cd475c1f38046b2c1",
+        "rev": "1f15c854fdc59b4db98990ee83d1a27f4432b7a8",
         "type": "github"
       },
       "original": {
