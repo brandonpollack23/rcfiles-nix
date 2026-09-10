@@ -169,6 +169,12 @@ split_horizontal = "prefix+minus"
 # width = "80%"
 # height = "80%"
 
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "hotchpotch.herdr-tiny-fingers.open"
+description = "fingers mode"
+
 # Legacy indexed shortcut config is still parsed for compatibility.
 # Prefer switch_tab, switch_workspace, and focus_agent for new configs.
 # [keys.indexed]

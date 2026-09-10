@@ -1,0 +1,56 @@
+{
+  "version": 3,
+  "workspaces": [
+    {
+      "id": "w6",
+      "custom_name": null,
+      "identity_cwd": "/Users/brpol",
+      "public_pane_numbers": {
+        "25": 17,
+        "7": 1
+      },
+      "next_public_pane_number": 21,
+      "public_tab_numbers": [
+        1,
+        9
+      ],
+      "next_public_tab_number": 13,
+      "tabs": [
+        {
+          "custom_name": "1:herdr config",
+          "layout": {
+            "Pane": 7
+          },
+          "panes": {
+            "7": {
+              "cwd": "/Users/brpol"
+            }
+          },
+          "zoomed": false,
+          "focused": 7,
+          "root_pane": 7
+        },
+        {
+          "custom_name": "2:blarg",
+          "layout": {
+            "Pane": 25
+          },
+          "panes": {
+            "25": {
+              "cwd": "/Users/brpol/rcfiles-nix"
+            }
+          },
+          "zoomed": false,
+          "focused": 25,
+          "root_pane": 25
+        }
+      ],
+      "active_tab": 1
+    }
+  ],
+  "active": 0,
+  "selected": 0,
+  "sidebar_width": null,
+  "sidebar_section_split": null,
+  "collapsed_space_keys": []
+}

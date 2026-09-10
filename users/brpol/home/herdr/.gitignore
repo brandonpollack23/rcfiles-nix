@@ -4,3 +4,4 @@ sessions/
 .plugins.lock
 config.toml.bak
 config.toml.claude-bak-*
+plugins/github/
