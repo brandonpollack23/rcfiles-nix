@@ -37,6 +37,7 @@ in {
     ./timewarrior.nix
     ./vscode.nix
     ./nvim.nix
+    ./herdr.nix
     ./gnome.nix
   ];
 

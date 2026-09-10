@@ -44,6 +44,7 @@
     glow # markdown rendering in the cli
     gnumake # make, need this sometimes
     go # googley c
+    herdr # agent multiplexer that lives in your terminal
     htop
     jj # version control of the modern times, reminds me of fig
     jq # json query language and formatter

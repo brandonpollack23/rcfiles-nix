@@ -1,0 +1,6 @@
+sessions/
+*.sock
+*.log
+.plugins.lock
+config.toml.bak
+config.toml.claude-bak-*
