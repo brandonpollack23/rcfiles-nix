@@ -67,6 +67,7 @@
     ssh-to-age # utility to convert ssh keys to age keys, used by sops for secrets management in nix
     starship # cross-shell prompt
     stdenv.cc # c compiler
+    swi-prolog # prolog interpreter (swipl)
     tmux
     tree
     wget
