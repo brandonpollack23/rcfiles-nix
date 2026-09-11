@@ -22,21 +22,21 @@ name = "dracula"
 # tmux palette: bg #282a36, gray #44475a, comment/active-window #6272a4,
 # purple #bd93f9, fg #f8f8f2
 [theme.custom]
-panel_bg      = "#282a36"   # dracula background
-sidebar_bg    = "#21222c"   # dracula "black", one step darker than bg
-surface_dim   = "#21222c"
+panel_bg = "#282a36"    # dracula background
+sidebar_bg = "#21222c"  # dracula "black", one step darker than bg
+surface_dim = "#21222c"
 # Inactive tab background. Set equal to panel_bg so the 1-column gap Herdr
 # paints between tabs (always panel_bg) is invisible -> tabs run edge to edge.
 # Use "#44475a" instead if you want inactive tabs to stand out from the bar.
-surface0      = "#282a36"
-surface1      = "#6272a4"   # tmux window-status-current bg
+surface0 = "#282a36"
+surface1 = "#6272a4"      # tmux window-status-current bg
 active_row_bg = "#44475a"
-selection_bg  = "#6272a4"
-overlay0      = "#f8f8f2"   # sidebar text
-overlay1      = "#f8f8f2"   # inactive tab label text (white)
-text          = "#f8f8f2"   # tmux white
-subtext0      = "#f8f8f2"   # tmux draws BOTH active and inactive window labels white
-accent        = "#bd93f9"   # dracula light_purple
+selection_bg = "#6272a4"
+overlay0 = "#f8f8f2"      # sidebar text
+overlay1 = "#f8f8f2"      # inactive tab label text (white)
+text = "#f8f8f2"          # tmux white
+subtext0 = "#f8f8f2"      # tmux draws BOTH active and inactive window labels white
+accent = "#bd93f9"        # dracula light_purple
 
 # Override individual color tokens on top of the base theme.
 # Accepts: hex (#rrggbb), named colors, rgb(r,g,b), or panel_bg = "reset"
@@ -116,14 +116,14 @@ workspace_picker = "prefix+s"
 # next_workspace = ""     # optional, unset by default
 # previous_agent = ""     # optional, unset by default
 # next_agent = ""         # optional, unset by default
-focus_agent = "prefix+alt+1..9"        # optional indexed binding, e.g. "prefix+alt+1..9"
+focus_agent = "prefix+alt+1..9" # optional indexed binding, e.g. "prefix+alt+1..9"
 # remote_image_paste = "ctrl+v" # only active in herdr --remote; empty disables raw-key image paste
 # new_tab = "prefix+c"
 rename_tab = "prefix+,"
 previous_tab = "ctrl+alt+["
 next_tab = "ctrl+alt+]"
-move_tab_previous = "ctrl+alt+{"   # optional, e.g. "alt+shift+left" moves the tab toward the front
-move_tab_next = "ctrl+alt+}"       # optional, e.g. "alt+shift+right" moves the tab toward the back
+move_tab_previous = "ctrl+alt+{" # optional, e.g. "alt+shift+left" moves the tab toward the front
+move_tab_next = "ctrl+alt+}"     # optional, e.g. "alt+shift+right" moves the tab toward the back
 # switch_tab = "prefix+1..9"
 # switch_workspace = ""   # optional indexed binding, e.g. "prefix+shift+1..9"
 # close_tab = ""
@@ -313,14 +313,11 @@ tab_bar_position = "bottom"
 # Expanded space rows. Built-ins are state_icon, state_text, workspace, branch, and git_status.
 # Custom values reported through workspace metadata use a $name token, for example $jj_status.
 # Inline token styles accept strict #RGB/#RRGGBB foregrounds plus bold and dim booleans.
-# [ui.sidebar.spaces]
+[ui.sidebar.spaces]
 # Blank rows between space entries. Set to 1 to restore the previous spacing.
-# row_gap = 0
-# rows = [["state_icon", "workspace"], ["branch", "git_status"]]
+row_gap = 0
+rows = [["state_icon", "workspace"], ["branch", "git_status"], ["$usage"]]
 
-# Accent color for highlights, borders, and navigation UI.
-# Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
-accent = "#bd93f9"
 
 # Background notification popup delivery
 [ui.toast]

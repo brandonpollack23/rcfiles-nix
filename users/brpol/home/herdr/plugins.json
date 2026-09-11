@@ -1,5 +1,126 @@
 [
   {
+    "plugin_id": "ez-corp.space-usage",
+    "name": "PC RAM & CPU Usage Overlay",
+    "version": "1.11.2",
+    "min_herdr_version": "0.7.5",
+    "description": "CPU and RAM usage per space, grouped under the branch name.",
+    "manifest_path": "/Users/brpol/rcfiles-nix/users/brpol/home/herdr/plugins/github/ez-corp.space-usage-2ecf2abc9b18/herdr-plugin.toml",
+    "plugin_root": "/Users/brpol/rcfiles-nix/users/brpol/home/herdr/plugins/github/ez-corp.space-usage-2ecf2abc9b18",
+    "enabled": true,
+    "platforms": [
+      "linux",
+      "macos",
+      "windows"
+    ],
+    "build": [
+      {
+        "platforms": [
+          "linux",
+          "macos",
+          "windows"
+        ],
+        "command": [
+          "cargo",
+          "build",
+          "--release"
+        ]
+      }
+    ],
+    "startup": [
+      {
+        "platforms": [
+          "linux",
+          "macos",
+          "windows"
+        ],
+        "command": [
+          "./target/release/space-usage",
+          "--restore"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "icons",
+        "title": "Preview icon tiers",
+        "command": [
+          "./target/release/space-usage",
+          "--icons"
+        ]
+      },
+      {
+        "id": "report",
+        "title": "Space usage report",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "./target/release/space-usage",
+          "--once"
+        ]
+      },
+      {
+        "id": "status-disable",
+        "title": "Disable sidebar usage status",
+        "command": [
+          "./target/release/space-usage",
+          "--disable"
+        ]
+      },
+      {
+        "id": "status-enable",
+        "title": "Enable sidebar usage status",
+        "command": [
+          "./target/release/space-usage",
+          "--enable"
+        ]
+      },
+      {
+        "id": "status-toggle",
+        "title": "Toggle sidebar usage status",
+        "command": [
+          "./target/release/space-usage",
+          "--toggle"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "on": "workspace.focused",
+        "platforms": [
+          "linux",
+          "macos",
+          "windows"
+        ],
+        "command": [
+          "./target/release/space-usage",
+          "--restore"
+        ]
+      }
+    ],
+    "panes": [
+      {
+        "id": "dashboard",
+        "title": "Space usage",
+        "placement": "overlay",
+        "command": [
+          "./target/release/space-usage",
+          "--interval",
+          "2"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "ezcorp-org",
+      "repo": "herdr-pc-ram-and-cpu-usage-overlay",
+      "resolved_commit": "94a2ea3bf21ec35c6da51b9657c97167e68034ce",
+      "managed_path": "/Users/brpol/.config/herdr/plugins/github/ez-corp.space-usage-2ecf2abc9b18",
+      "installed_unix_ms": 1789110167863
+    }
+  },
+  {
     "plugin_id": "hotchpotch.herdr-tiny-fingers",
     "name": "herdr-tiny-fingers",
     "version": "0.1.0",
