@@ -31,6 +31,20 @@ uses `(import ../../lib/application-profiles.nix).defaultDarwinWorkstation`.
 The Darwin list omits DaVinci Resolve Studio because the locked nixpkgs package
 supports Linux only.
 
+## Rebuilding
+
+Run `nrs` for a normal system switch. On Darwin, routine switches reconcile the
+declared Homebrew packages and remove unlisted packages with `zap`, but skip
+Homebrew metadata and package upgrades to keep activation fast. Request those
+updates explicitly when needed:
+
+```bash
+nrs --homebrew-update
+```
+
+The Homebrew update runs after a successful Darwin system switch. Any remaining
+arguments are forwarded to `nh darwin switch`.
+
 ## Secrets (sops-nix)
 
 Secrets live in `secrets/secrets.yaml`, encrypted with [sops](https://github.com/getsops/sops)

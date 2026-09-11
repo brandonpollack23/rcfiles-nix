@@ -13,8 +13,10 @@
   homebrew = {
     enable = true;
     onActivation = {
-      autoUpdate = true;
-      upgrade = true;
+      # Keep routine nrs activation fast. Use `nrs --homebrew-update` when
+      # Homebrew metadata and installed packages should also be updated.
+      autoUpdate = false;
+      upgrade = false;
       # zap removes unlisted formulae and casks on activation.
       cleanup = "zap";
     };
