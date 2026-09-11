@@ -6,15 +6,18 @@
       "custom_name": null,
       "identity_cwd": "/Users/brpol",
       "public_pane_numbers": {
-        "25": 17,
-        "7": 1
+        "7": 1,
+        "29": 21,
+        "35": 27,
+        "36": 28
       },
-      "next_public_pane_number": 21,
+      "next_public_pane_number": 29,
       "public_tab_numbers": [
         1,
-        9
+        13,
+        17
       ],
-      "next_public_tab_number": 13,
+      "next_public_tab_number": 18,
       "tabs": [
         {
           "custom_name": "1:herdr config",
@@ -31,18 +34,44 @@
           "root_pane": 7
         },
         {
-          "custom_name": "2:blarg",
+          "custom_name": "tiny fingers",
           "layout": {
-            "Pane": 25
+            "Split": {
+              "direction": "Vertical",
+              "ratio": 0.5,
+              "first": {
+                "Pane": 29
+              },
+              "second": {
+                "Pane": 36
+              }
+            }
           },
           "panes": {
-            "25": {
+            "29": {
+              "cwd": "/Users/brpol/rcfiles-nix"
+            },
+            "36": {
               "cwd": "/Users/brpol/rcfiles-nix"
             }
           },
           "zoomed": false,
-          "focused": 25,
-          "root_pane": 25
+          "focused": 36,
+          "root_pane": 29
+        },
+        {
+          "custom_name": "image",
+          "layout": {
+            "Pane": 35
+          },
+          "panes": {
+            "35": {
+              "cwd": "/Users/brpol"
+            }
+          },
+          "zoomed": false,
+          "focused": 35,
+          "root_pane": 35
         }
       ],
       "active_tab": 1

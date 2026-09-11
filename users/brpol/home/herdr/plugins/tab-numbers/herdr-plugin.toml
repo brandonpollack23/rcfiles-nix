@@ -1,7 +1,7 @@
 id = "local.tab-numbers"
 name = "Tab numbers"
 version = "0.1.0"
-min_herdr_version = "0.9.0"
+min_herdr_version = "0.8.0"
 description = "Prefix every tab label with its position, so labels match prefix+1..9"
 platforms = ["linux", "macos"]
 
