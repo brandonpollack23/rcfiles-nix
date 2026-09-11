@@ -228,5 +228,78 @@
     "source": {
       "kind": "local"
     }
+  },
+  {
+    "plugin_id": "mroth.jj-status",
+    "name": "jj status",
+    "version": "0.1.1",
+    "min_herdr_version": "0.7.5",
+    "description": "Show the Jujutsu bookmark and status for jj workspaces in the spaces sidebar",
+    "manifest_path": "/Users/brpol/rcfiles-nix/users/brpol/home/herdr/plugins/github/mroth.jj-status-f7e3ac54a4fe/herdr-plugin.toml",
+    "plugin_root": "/Users/brpol/rcfiles-nix/users/brpol/home/herdr/plugins/github/mroth.jj-status-f7e3ac54a4fe",
+    "enabled": true,
+    "platforms": [
+      "macos",
+      "linux"
+    ],
+    "startup": [
+      {
+        "command": [
+          "bash",
+          "bin/refresh.sh"
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "refresh",
+        "title": "jj status: refresh all",
+        "contexts": [
+          "workspace"
+        ],
+        "command": [
+          "bash",
+          "bin/refresh.sh"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "on": "workspace.created",
+        "command": [
+          "bash",
+          "bin/refresh.sh"
+        ]
+      },
+      {
+        "on": "workspace.focused",
+        "command": [
+          "bash",
+          "bin/refresh.sh"
+        ]
+      },
+      {
+        "on": "worktree.created",
+        "command": [
+          "bash",
+          "bin/refresh.sh"
+        ]
+      },
+      {
+        "on": "worktree.opened",
+        "command": [
+          "bash",
+          "bin/refresh.sh"
+        ]
+      }
+    ],
+    "source": {
+      "kind": "github",
+      "owner": "mroth",
+      "repo": "herdr-jj-status",
+      "resolved_commit": "40588ef743e1dd6a252b2e39765616584fd2e39e",
+      "managed_path": "/Users/brpol/.config/herdr/plugins/github/mroth.jj-status-f7e3ac54a4fe",
+      "installed_unix_ms": 1789117430232
+    }
   }
 ]
