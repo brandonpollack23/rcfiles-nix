@@ -1,5 +1,9 @@
-# nix-darwin has no programs.nh module; set NH_FLAKE directly so rebuild/darwin.nix
-# and the auto-upgrade launchd agent can invoke `nh darwin switch`.
-{config, ...}: {
+# nix-darwin has no programs.nh module, so install nh and set NH_FLAKE directly.
+{
+  config,
+  pkgs,
+  ...
+}: {
+  environment.systemPackages = [pkgs.nh];
   environment.variables.NH_FLAKE = "${config.users.users.brpol.home}/rcfiles-nix";
 }

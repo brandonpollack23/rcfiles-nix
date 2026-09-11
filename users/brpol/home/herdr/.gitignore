@@ -1,4 +1,6 @@
 sessions/
+session.json
+session-history.json
 *.sock
 *.log
 .plugins.lock
