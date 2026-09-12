@@ -1,0 +1,9 @@
+# Portable plugin declarations. Paths are relative to this directory.
+#
+# github OWNER/REPO[/SUBDIR]
+# local  PLUGIN_ID RELATIVE_PATH
+github ezcorp-org/herdr-pc-ram-and-cpu-usage-overlay
+github hotchpotch/herdr-tiny-fingers
+github mroth/jj-status
+local local.bootstrap-plugins plugins/bootstrap-plugins
+local local.tab-numbers plugins/tab-numbers

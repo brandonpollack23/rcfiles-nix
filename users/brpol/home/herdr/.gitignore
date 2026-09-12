@@ -4,6 +4,9 @@ session-history.json
 *.sock
 *.log
 .plugins.lock
+.plugins_bootstrapped
+.plugins_bootstrap.lock
+plugins.json
 config.toml.bak
 config.toml.claude-bak-*
 plugins/github/

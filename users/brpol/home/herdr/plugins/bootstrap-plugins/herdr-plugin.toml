@@ -1,0 +1,9 @@
+id = "local.bootstrap-plugins"
+name = "Plugin bootstrapper"
+version = "1.0.0"
+min_herdr_version = "0.8.0"
+description = "Relink local plugins and install GitHub plugins when tracked sources change"
+platforms = ["linux", "macos"]
+
+[[startup]]
+command = ["sh", "bootstrap.sh"]

@@ -106,11 +106,11 @@ detach = "prefix+d"
 # open_notification_target = "prefix+o"
 workspace_picker = "prefix+s"
 # goto = "prefix+g"
-# new_workspace = "prefix+shift+n"
+new_workspace = "prefix+shift+c"
 # new_worktree = "prefix+shift+g"
 # open_worktree = ""    # optional, unset by default
 # remove_worktree = ""  # optional, unset by default; opens confirmation
-# rename_workspace = "prefix+shift+w"
+rename_workspace = "prefix+$"
 # close_workspace = "prefix+shift+d"
 # previous_workspace = "" # optional, unset by default
 # next_workspace = ""     # optional, unset by default
@@ -149,8 +149,8 @@ close_pane = "prefix+x"
 
 # Navigate-mode movement. These local shortcuts win while navigate mode is open.
 # They are independent from focus_pane_*. Do not include prefix+, esc, enter, tab, or 1..9 here.
-# navigate_workspace_up = "up"
-# navigate_workspace_down = "down"
+navigate_workspace_up = "k"
+navigate_workspace_down = "j"
 # navigate_pane_left = "h"      # left arrow always focuses the pane to the left
 # navigate_pane_down = "j"
 # navigate_pane_up = "k"
@@ -193,7 +193,7 @@ description = "fingers mode"
 
 [ui]
 # Sidebar width (auto-scaled based on workspace names, this sets the default)
-# sidebar_width = 26
+sidebar_width = 20
 
 # Minimum sidebar width when expanded (columns)
 # sidebar_min_width = 18
@@ -316,7 +316,23 @@ tab_bar_position = "bottom"
 [ui.sidebar.spaces]
 # Blank rows between space entries. Set to 1 to restore the previous spacing.
 row_gap = 0
-rows = [["state_icon", "workspace"], ["branch", "git_status"], ["$jj_bookmark", "$jj_status"], ["$usage"]]
+rows = [
+  [
+    "state_icon",
+    "workspace",
+  ],
+  [
+    "branch",
+    "git_status",
+  ],
+  [
+    "$jj_bookmark",
+    "$jj_status",
+  ],
+  [
+    "$usage",
+  ],
+]
 
 
 # Background notification popup delivery
